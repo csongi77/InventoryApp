@@ -15,12 +15,12 @@ public final class ProductContract {
     public static class ProductEntry implements BaseColumns {
 
         // defining columns
-        private static final String TABLE_NAME="products";
-        private static final String _ID=BaseColumns._ID;
-        private static final String COLUMN_PRODUCT_NAME="product_name";
-        private static final String COLUMN_PRICE="price";
-        private static final String COLUMN_QUANTITY="quantity";
-        private static final String COLUMN_SUPPLIER_NAME="supplier_name";
-        private static final String COLUMN_SUPPLIER_PHONE="supplier_phone";
+        public static final String TABLE_NAME="products";
+        public static final String _ID=BaseColumns._ID;
+        public static final String COLUMN_NAME_PRODUCT_NAME ="product_name";
+        public static final String COLUMN_NAME_PRICE ="price";
+        public static final String COLUMN_NAME_QUANTITY ="quantity";
+        public static final String COLUMN_NAME_SUPPLIER_NAME ="supplier_name";
+        public static final String COLUMN_NAME_SUPPLIER_PHONE ="supplier_phone";
     }
 }
