@@ -3,19 +3,20 @@ package net.sytes.csongi.inventoryapp.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import static net.sytes.csongi.inventoryapp.data.ProductContract.*;
+import static net.sytes.csongi.inventoryapp.data.ProductContract.ProductEntry;
 
 /**
- * DB helper for App
+ * DB helper for App. The class is package private since only the ProductDAO class can
+ * initiate CRUD operations. All clients in other packages can communicate with database
+ * through ProductDAO using ProductEntities.
  */
-public class ProductDbHelper extends SQLiteOpenHelper {
+class ProductDbHelper extends SQLiteOpenHelper {
 
     // declaring constants
-    public static final int DATABASE_VERSION=1;
-    public static final String DATABASE_NAME="InventoryApp.db";
+    static final int DATABASE_VERSION=1;
+    static final String DATABASE_NAME="InventoryApp.db";
     private static final String LOG_TAG=ProductDbHelper.class.getSimpleName()+" --->";
 
     // creating SQL TABLE constant
@@ -27,7 +28,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
             ProductEntry.COLUMN_NAME_SUPPLIER_NAME +" TEXT NOT NULL, "+
             ProductEntry.COLUMN_NAME_SUPPLIER_PHONE +" TEXT NOT NULL)";
 
-    public ProductDbHelper(Context context) {
+    ProductDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

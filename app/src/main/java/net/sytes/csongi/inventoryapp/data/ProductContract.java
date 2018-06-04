@@ -5,14 +5,14 @@ import android.provider.BaseColumns;
 /**
  * Contract for products
  */
-public final class ProductContract {
+final class ProductContract {
 
     // empty constructor for avoiding instantiating this class
     private ProductContract() {
     }
 
     // the product table contract
-    public static class ProductEntry implements BaseColumns {
+    static class ProductEntry implements BaseColumns {
 
         // defining columns
         public static final String TABLE_NAME="products";
