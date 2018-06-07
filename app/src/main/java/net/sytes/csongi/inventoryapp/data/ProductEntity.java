@@ -10,6 +10,7 @@ public class ProductEntity implements Parcelable {
     private long mId;
     private int mPrice, mQuantity;
     private String mProductName;
+    private SupplierEntity mSupplierEntity;
 
     /**
      * An emtpy Ctor
@@ -21,7 +22,25 @@ public class ProductEntity implements Parcelable {
      * Parcelable implementation for this entity
      * @param in
      */
+    protected ProductEntity(Parcel in) {
+        mId = in.readLong();
+        mPrice = in.readInt();
+        mQuantity = in.readInt();
+        mProductName = in.readString();
+        mSupplierEntity = in.readParcelable(SupplierEntity.class.getClassLoader());
+    }
 
+    public static final Creator<ProductEntity> CREATOR = new Creator<ProductEntity>() {
+        @Override
+        public ProductEntity createFromParcel(Parcel in) {
+            return new ProductEntity(in);
+        }
+
+        @Override
+        public ProductEntity[] newArray(int size) {
+            return new ProductEntity[size];
+        }
+    };
 
     /**
      * Getter for entity's Id
@@ -77,33 +96,33 @@ public class ProductEntity implements Parcelable {
     }
 
     /**
-     * Getter and setter for Supplier Name
+     * Getter and setter for Supplier
      * @return String - Name of supplier
      */
-    public String getSupplierName() {
-        return mSupplierName;
+    public SupplierEntity getSupplierEntity() {
+        return mSupplierEntity;
     }
 
-    public void setSupplierName(String supplierName) {
-        this.mSupplierName = supplierName;
+    public void setSupplierEntity(SupplierEntity supplierEntity) {
+        this.mSupplierEntity = supplierEntity;
     }
 
-    /**
-     * Getter and setter for Supplier phone. Since there might be other characters than digits,
-     * this field type is String
-     * @return String - Phone number of Supplier
-     */
-    public String getSupplierPhone() {
-        return mSupplierPhone;
-    }
-
-    public void setSupplierPhone(String supplierPhone) {
-        this.mSupplierPhone = supplierPhone;
-    }
 
     /**
      * Parcelable implementation
      * @return
      */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mId);
+        dest.writeInt(mPrice);
+        dest.writeInt(mQuantity);
+        dest.writeString(mProductName);
+        dest.writeParcelable(mSupplierEntity, flags);
+    }
 }
