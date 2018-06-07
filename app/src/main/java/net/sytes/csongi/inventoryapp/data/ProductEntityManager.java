@@ -50,7 +50,7 @@ public class ProductEntityManager {
         if (productEntity.getProductName() == null || productEntity.getProductName().length() == 0)
             resultList.add((long) ErrorCodes.PRODUCT_NAME_EMPTY_ERROR);
         if (productEntity.getSupplierEntity() == null)
-            resultList.add((long) ErrorCodes.SUPPLIER_NAME_EMPTY_ERROR);
+            resultList.add((long) ErrorCodes.NO_SUPPLIER_SELECTED);
 
         /* If there are no errors, we try to persist the ProductEntity into database
          * First we create ContentValues then
@@ -62,7 +62,7 @@ public class ProductEntityManager {
             contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_PRODUCT_NAME,productEntity.getProductName());
             contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_PRICE,productEntity.getPrice());
             contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_QUANTITY,productEntity.getQuantity());
-            contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_SUPPLIER_ID,productEntity.);
+            contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_SUPPLIER_ID,productEntity.getSupplierEntity().getmId());
 
             ProductDbHelper helper=new ProductDbHelper(mContext);
             SQLiteDatabase database=helper.getWritableDatabase();

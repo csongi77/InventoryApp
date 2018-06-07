@@ -107,6 +107,31 @@ public class ProductEntity implements Parcelable {
         this.mSupplierEntity = supplierEntity;
     }
 
+    // Overriding equals and hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProductEntity that = (ProductEntity) o;
+
+        if (mId != that.mId) return false;
+        if (mPrice != that.mPrice) return false;
+        if (mQuantity != that.mQuantity) return false;
+        if (mProductName != null ? !mProductName.equals(that.mProductName) : that.mProductName != null)
+            return false;
+        return mSupplierEntity != null ? mSupplierEntity.equals(that.mSupplierEntity) : that.mSupplierEntity == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (mId ^ (mId >>> 32));
+        result = 31 * result + mPrice;
+        result = 31 * result + mQuantity;
+        result = 31 * result + (mProductName != null ? mProductName.hashCode() : 0);
+        result = 31 * result + (mSupplierEntity != null ? mSupplierEntity.hashCode() : 0);
+        return result;
+    }
 
     /**
      * Parcelable implementation
