@@ -49,10 +49,8 @@ public class ProductEntityManager {
         fields are empty, an appropriate error code will be added to resultList */
         if (productEntity.getProductName() == null || productEntity.getProductName().length() == 0)
             resultList.add((long) ErrorCodes.PRODUCT_NAME_EMPTY_ERROR);
-        if (productEntity.getSupplierName() == null || productEntity.getSupplierName().length() == 0)
+        if (productEntity.getSupplierEntity() == null)
             resultList.add((long) ErrorCodes.SUPPLIER_NAME_EMPTY_ERROR);
-        if (productEntity.getSupplierPhone() == null || productEntity.getSupplierPhone().length() == 0)
-            resultList.add((long) ErrorCodes.SUPPLIER_PHONE_EMPTY_ERROR);
 
         /* If there are no errors, we try to persist the ProductEntity into database
          * First we create ContentValues then

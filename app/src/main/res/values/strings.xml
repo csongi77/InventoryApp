@@ -14,6 +14,7 @@
     <string name="error_supplier_phone_empty_key" translatable="false">-4</string>
     <string name="error_unknown_error_key" translatable="false">-5</string>
     <string name="error_no_results_key" translatable="false">-6</string>
+    <string name="error_no_supplier_selected_key" translatable="false">-7</string>
 
     <!-- Error message string values-->
     <string name="error_db_write_error_value">Database write error.</string>
@@ -22,8 +23,12 @@
     <string name="error_supplier_phone_empty_value">The supplier phone number must not be empty.</string>
     <string name="error_unknown_error_value">Unknown error.</string>
     <string name="error_no_results_value">There are no valid results.</string>
+    <string name="error_no_supplier_selected_value">No supplier selected.</string>
+
+    <!-- Error message parts -->
     <string name="first_error_code">Error code:</string>
     <string name="following_error_codes">, error code:</string>
+
 
 
 </resources>
