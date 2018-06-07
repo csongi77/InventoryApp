@@ -64,8 +64,7 @@ public class ProductEntityManager {
             contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_PRODUCT_NAME,productEntity.getProductName());
             contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_PRICE,productEntity.getPrice());
             contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_QUANTITY,productEntity.getQuantity());
-            contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_SUPPLIER_NAME,productEntity.getSupplierName());
-            contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_SUPPLIER_PHONE,productEntity.getSupplierPhone());
+            contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_SUPPLIER_ID,productEntity.);
 
             ProductDbHelper helper=new ProductDbHelper(mContext);
             SQLiteDatabase database=helper.getWritableDatabase();

@@ -21,26 +21,7 @@ public class ProductEntity implements Parcelable {
      * Parcelable implementation for this entity
      * @param in
      */
-    protected ProductEntity(Parcel in) {
-        mId = in.readLong();
-        mPrice = in.readInt();
-        mQuantity = in.readInt();
-        mProductName = in.readString();
-        mSupplierName = in.readString();
-        mSupplierPhone = in.readString();
-    }
 
-    public static final Creator<ProductEntity> CREATOR = new Creator<ProductEntity>() {
-        @Override
-        public ProductEntity createFromParcel(Parcel in) {
-            return new ProductEntity(in);
-        }
-
-        @Override
-        public ProductEntity[] newArray(int size) {
-            return new ProductEntity[size];
-        }
-    };
 
     /**
      * Getter for entity's Id
@@ -124,18 +105,5 @@ public class ProductEntity implements Parcelable {
      * Parcelable implementation
      * @return
      */
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mId);
-        dest.writeInt(mPrice);
-        dest.writeInt(mQuantity);
-        dest.writeString(mProductName);
-        dest.writeString(mSupplierName);
-        dest.writeString(mSupplierPhone);
-    }
 }
