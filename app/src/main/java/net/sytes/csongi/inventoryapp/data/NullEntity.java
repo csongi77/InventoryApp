@@ -20,6 +20,7 @@ public final class NullEntity implements Entity {
         this.mErrorCode = errorCode;
     }
 
+    // Parcelable implementation
     protected NullEntity(Parcel in) {
         mErrorCode = in.readLong();
     }

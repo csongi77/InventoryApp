@@ -24,6 +24,10 @@ public class SupplierEntityManager extends InventoryEntityManager<SupplierEntity
         super(InventoryContract.SupplierEntry.TABLE_NAME);
     }
 
+    /**
+     * Method for getting the only instance of this class (since it's a Singleton)
+     * @return - the SupplierEntityManager instance
+     */
     public static SupplierEntityManager getInstance() {
         if (sInstance == null) synchronized (SupplierEntityManager.class) {
             sInstance = new SupplierEntityManager();
@@ -33,7 +37,7 @@ public class SupplierEntityManager extends InventoryEntityManager<SupplierEntity
 
     // Overriding abstract template methods from InventoryEntityManager
     @Override
-    Entity getEntityFromCursor(Cursor cursor, Context context) {
+    protected SupplierEntity getEntityFromCursor(Cursor cursor, Context context) {
 
         // parsing results from Cursor object
         long supplierId=cursor.getLong(0);
@@ -50,15 +54,14 @@ public class SupplierEntityManager extends InventoryEntityManager<SupplierEntity
     }
 
     @Override
-    protected List<Long> checkFields(List<Long> resultList, Entity entity) {
+    protected List<Long> checkFields(List<Long> resultList, SupplierEntity entity) {
 
         // checking whether all not-null fields has been filled.
-        SupplierEntity supplierEntity=(SupplierEntity)entity;
-        if(supplierEntity.getSupplierName()==null||supplierEntity.getSupplierName().length()<1) {
+        if(entity.getSupplierName()==null||entity.getSupplierName().length()<1) {
             resultList.add((long) ErrorCodes.SUPPLIER_NAME_EMPTY_ERROR);
             Log.d(LOG_TAG,"Supplier name empty error");
         }
-        if(supplierEntity.getSupplierPhone()==null||supplierEntity.getSupplierName().length()<1) {
+        if(entity.getSupplierPhone()==null||entity.getSupplierName().length()<1) {
             resultList.add((long) ErrorCodes.SUPPLIER_PHONE_EMPTY_ERROR);
             Log.d(LOG_TAG,"Supplier phone empty error");
         }
@@ -66,13 +69,12 @@ public class SupplierEntityManager extends InventoryEntityManager<SupplierEntity
     }
 
     @Override
-    protected ContentValues getContentValues(Entity entity) {
+    protected ContentValues getContentValues(SupplierEntity entity) {
 
         // creating appropriate ContentValues
         ContentValues contentValuesToReturn=new ContentValues();
-        SupplierEntity supplierEntity=(SupplierEntity)entity;
-        contentValuesToReturn.put(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_NAME,supplierEntity.getSupplierName());
-        contentValuesToReturn.put(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE,supplierEntity.getSupplierPhone());
+        contentValuesToReturn.put(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_NAME,entity.getSupplierName());
+        contentValuesToReturn.put(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE,entity.getSupplierPhone());
         Log.d(LOG_TAG,"supplier content values has been created");
         return contentValuesToReturn;
     }

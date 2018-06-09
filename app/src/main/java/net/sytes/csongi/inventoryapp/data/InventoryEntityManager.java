@@ -51,7 +51,7 @@ public abstract class InventoryEntityManager <T extends Entity> {
                 null, null, null);
         T entityToReturn;
         if (cursor.moveToNext()) {
-            entityToReturn = (T) getEntityFromCursor(cursor, context);
+            entityToReturn = getEntityFromCursor(cursor, context);
             Log.d(LOG_TAG,"findEntityById has result!");
         } else {
             entityToReturn = (T) new NullEntity((long) ErrorCodes.NO_RESULTS);
@@ -75,19 +75,19 @@ public abstract class InventoryEntityManager <T extends Entity> {
         Cursor cursor = db.query(mTableName, null,
                 null, null,
                 null, null, null);
-        Entity entity;
+        T entity;
         List<T> entitiesResult = new ArrayList<>();
         while (cursor.moveToNext()) {
             entity = getEntityFromCursor(cursor, context);
-            entitiesResult.add((T)entity);
+            entitiesResult.add(entity);
             Log.d(LOG_TAG,"findAllEntity result with id:="+String.valueOf(entity.getId())+"added to result list");
         }
 
         // We close the Cursor in order to avoid memory leak
         cursor.close();
         if (entitiesResult.isEmpty()) {
-            entity = new NullEntity((long)ErrorCodes.NO_RESULTS);
-            entitiesResult.add((T) entity);
+            entity = (T) new NullEntity((long)ErrorCodes.NO_RESULTS);
+            entitiesResult.add(entity);
             Log.d(LOG_TAG,"findAllEntity has no result!");
         }
         return entitiesResult;
@@ -96,10 +96,10 @@ public abstract class InventoryEntityManager <T extends Entity> {
     /**
      * Abstract method for generating Entity from Cursor
      *
-     * @param cursor
-     * @return
+     * @param cursor - the Cursor object we get from db.query
+     * @return an appropriate type of Entity
      */
-    abstract Entity getEntityFromCursor(Cursor cursor, Context context);
+    protected abstract T getEntityFromCursor(Cursor cursor, Context context);
 
     /**
      * Persist Entity into database.
@@ -111,7 +111,7 @@ public abstract class InventoryEntityManager <T extends Entity> {
      * 3) more than one element List of error codes. For error codes
      * @see @{@link ErrorCodes}
      */
-    public List<Long> insert(Entity entity, Context context) {
+    public List<Long> insert(T entity, Context context) {
         // Creating empty result list
         List<Long> resultMessageList = new ArrayList<>();
 
@@ -139,10 +139,10 @@ public abstract class InventoryEntityManager <T extends Entity> {
 
     /* Checking not null fields that has no default values. If some of those
             fields are empty, an appropriate error code will be added to resultList */
-    protected abstract List<Long> checkFields(List<Long> resultList, Entity entity);
+    protected abstract List<Long> checkFields(List<Long> resultList, T entity);
 
     // Creating ContentValues for inserting rows into appropriate table
-    protected abstract ContentValues getContentValues(Entity entity);
+    protected abstract ContentValues getContentValues(T entity);
 
     /* Not implemented yet
     public abstract boolean update(Entity entity, Context context);

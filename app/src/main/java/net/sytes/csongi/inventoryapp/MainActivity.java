@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import net.sytes.csongi.inventoryapp.data.ErrorCodes;
+import net.sytes.csongi.inventoryapp.data.NullEntity;
 import net.sytes.csongi.inventoryapp.data.ProductEntity;
 import net.sytes.csongi.inventoryapp.data.ProductEntityManager;
 import net.sytes.csongi.inventoryapp.data.SupplierEntity;

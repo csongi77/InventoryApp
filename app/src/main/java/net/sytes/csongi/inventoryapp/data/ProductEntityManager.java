@@ -24,6 +24,10 @@ public class ProductEntityManager extends InventoryEntityManager<ProductEntity> 
         super(InventoryContract.ProductEntry.TABLE_NAME);
     }
 
+    /**
+     * Method for getting the only instance of this class (since it's a Singleton)
+     * @return - the ProductEntityManager instance
+     */
     public static ProductEntityManager getInstance() {
         if (sInstance == null) synchronized (ProductEntityManager.class) {
             sInstance = new ProductEntityManager();
@@ -33,7 +37,7 @@ public class ProductEntityManager extends InventoryEntityManager<ProductEntity> 
 
     // Overriding abstract template methods from InventoryEntityManager
     @Override
-    Entity getEntityFromCursor(Cursor cursor, Context context) {
+    protected ProductEntity getEntityFromCursor(Cursor cursor, Context context) {
 
         // parsing results from Cursor object
         long itemId=cursor.getLong(0);
@@ -57,15 +61,14 @@ public class ProductEntityManager extends InventoryEntityManager<ProductEntity> 
     }
 
     @Override
-    protected List<Long> checkFields(List<Long> resultList, Entity entity) {
+    protected List<Long> checkFields(List<Long> resultList, ProductEntity entity) {
 
         // checking whether all not-null fields has been filled.
-        ProductEntity productEntity = (ProductEntity)entity;
-        if (productEntity.getProductName() == null || productEntity.getProductName().length() < 1) {
+        if (entity.getProductName() == null || entity.getProductName().length() < 1) {
             resultList.add((long) ErrorCodes.PRODUCT_NAME_EMPTY_ERROR);
             Log.d(LOG_TAG,"Product name empty error");
         }
-        if (productEntity.getSupplierEntity() == null) {
+        if (entity.getSupplierEntity() == null) {
             resultList.add((long) ErrorCodes.NO_SUPPLIER_SELECTED);
             Log.d(LOG_TAG,"No supplier selected error");
         }
@@ -73,13 +76,12 @@ public class ProductEntityManager extends InventoryEntityManager<ProductEntity> 
     }
 
     @Override
-    protected ContentValues getContentValues(Entity entity) {
+    protected ContentValues getContentValues(ProductEntity entity) {
         ContentValues contentValuesToReturn = new ContentValues();
-        ProductEntity productEntity=(ProductEntity)entity;
-        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_PRODUCT_NAME, productEntity.getProductName());
-        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_PRICE, productEntity.getPrice());
-        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_QUANTITY, productEntity.getQuantity());
-        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_SUPPLIER_ID, productEntity.getSupplierEntity().getId());
+        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_PRODUCT_NAME, entity.getProductName());
+        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_PRICE, entity.getPrice());
+        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_QUANTITY, entity.getQuantity());
+        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_SUPPLIER_ID, entity.getSupplierEntity().getId());
         Log.d(LOG_TAG,"Product content values has been created");
         return contentValuesToReturn;
     }
