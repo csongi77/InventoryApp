@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Entity class for product
  */
-public class ProductEntity implements Parcelable {
+public class ProductEntity implements Entity {
     private long mId;
     private int mPrice, mQuantity;
     private String mProductName;
@@ -46,17 +46,14 @@ public class ProductEntity implements Parcelable {
      * Getter for entity's Id
      * @return the id
      */
+    @Override
     public long getId() {
         return mId;
     }
 
-    /**
-     * Since only EntityManager can access to database and none of the clients can
-     * set this value directly, the setter remains package private
-     * @param id the id of Entity which was retreived from database
-     */
-    void setId(long id) {
-        this.mId=id;
+    @Override
+    public void setId(long id){
+        mId=id;
     }
 
     /**

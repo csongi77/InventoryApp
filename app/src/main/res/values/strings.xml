@@ -8,6 +8,7 @@
     <string name="create_dummy_product">Create dummy Product</string>
 
     <!-- Error message string keys -->
+    <string name="error_result_ok_key" translatable="false">0</string>
     <string name="error_db_write_error_key" translatable="false">-1</string>
     <string name="error_product_name_empty_key" translatable="false">-2</string>
     <string name="error_supplier_name_empty_key" translatable="false">-3</string>
@@ -17,6 +18,7 @@
     <string name="error_no_supplier_selected_key" translatable="false">-7</string>
 
     <!-- Error message string values-->
+    <string name="error_result_ok_value">OK</string>
     <string name="error_db_write_error_value">Database write error.</string>
     <string name="error_product_name_empty_value">The product name must not be empty.</string>
     <string name="error_supplier_name_empty_value">The supplier name must not be empty.</string>

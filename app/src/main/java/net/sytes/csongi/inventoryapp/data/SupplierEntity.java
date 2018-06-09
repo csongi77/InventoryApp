@@ -1,9 +1,8 @@
 package net.sytes.csongi.inventoryapp.data;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
-public class SupplierEntity implements Parcelable{
+public class SupplierEntity implements Entity{
 
     private long mId;
     private String mSupplierName, mSupplierPhone;
@@ -33,28 +32,29 @@ public class SupplierEntity implements Parcelable{
     };
 
     /**
-     * getter and setter for Id. Since id is primary- and nonmodifyable key, only
-     * classes of this package can access for setters
+     * getter and setter for Id.
      * @return long Id
      */
-    public long getmId() {
+    @Override
+    public long getId() {
         return mId;
     }
 
-    void setmId(long mId) {
-        this.mId = mId;
+    @Override
+    public void setId(long id) {
+        mId=id;
     }
 
     /**
      * Getter and setter for Supplier name
      * @return name of Supplier (String)
      */
-    public String getmSupplierName() {
+    public String getSupplierName() {
         return mSupplierName;
     }
 
-    public void setmSupplierName(String mSupplierName) {
-        this.mSupplierName = mSupplierName;
+    public void setSupplierName(String supplierName) {
+        this.mSupplierName = supplierName;
     }
 
     /**
@@ -62,12 +62,12 @@ public class SupplierEntity implements Parcelable{
      * this field type is String
      * @return
      */
-    public String getmSupplierPhone() {
+    public String getSupplierPhone() {
         return mSupplierPhone;
     }
 
-    public void setmSupplierPhone(String mSupplierPhone) {
-        this.mSupplierPhone = mSupplierPhone;
+    public void setSupplierPhone(String supplierPhone) {
+        this.mSupplierPhone = supplierPhone;
     }
 
     // overriding equals in order if we want remove this entity from List or database

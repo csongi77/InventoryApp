@@ -5,8 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
+import net.sytes.csongi.inventoryapp.data.ErrorCodes;
 import net.sytes.csongi.inventoryapp.data.ProductEntity;
 import net.sytes.csongi.inventoryapp.data.ProductEntityManager;
+import net.sytes.csongi.inventoryapp.data.SupplierEntity;
+import net.sytes.csongi.inventoryapp.data.SupplierEntityManager;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,19 +23,26 @@ import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final long MINIMUM_NUMBER_OF_SUPPLIERS = 3L;
+    private static final int ONLY_ONE_RESULT = 1;
+    private static final int FIRST_RESULT=0;
     @BindView(R.id.txt_response_message)
     TextView mResponseMessage;
-    @BindView(R.id.btn_dummy) Button mButton;
+    @BindView(R.id.btn_dummy)
+    Button mButton;
     private Unbinder unbinder;
-    private ProductEntityManager mEntityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        unbinder= ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
-        mEntityManager = new ProductEntityManager(getApplicationContext());
+        // Create some Supplier records if there are no suppliers added to DB yet
+        if (SupplierEntityManager.getInstance().findEntityById(MINIMUM_NUMBER_OF_SUPPLIERS,
+                getApplicationContext()).getId() < ErrorCodes.RESULT_OK) {
+            generateTheSuppliers();
+        }
 
         mButton.setOnClickListener(v -> {
             insertProduct();
@@ -50,21 +60,29 @@ public class MainActivity extends AppCompatActivity {
          */
         ProductEntity productEntity = generateEntity();
 
-        // Creating an mEntityManager
+        /**
+         * Inserting new Entity. If everything is OK, the returned list contains only one
+         * element with positive Long number (the ID of the new result).
+         */
+        List<Long> result = ProductEntityManager.getInstance().insert(productEntity, getApplicationContext());
 
-        List<Long> result = mEntityManager.insertProduct(productEntity);
-
-        if (result.size() == 1 && result.get(0) > 0L) {
-            String toDisplay = String.format(getApplicationContext().getString(R.string.response_string), result.get(0), productEntity.getProductName());
+        // If the result's first element's ID (which code is positive) we display the ID of the new Entity
+        if (result.size() == ONLY_ONE_RESULT && result.get(FIRST_RESULT) > ErrorCodes.RESULT_OK) {
+            String toDisplay = String.format(getApplicationContext().getString(R.string.response_string), result.get(FIRST_RESULT), productEntity.getProductName());
             mResponseMessage.setText(toDisplay);
         } else {
+            // Else we get the result codes and messages from a resources array
             String[] keys = getResources().getStringArray(R.array.error_code_keys);
             String[] messageStrings = getResources().getStringArray(R.array.error_code_values);
-            Map<Long,String> messageMap = new HashMap<>();
-            for(int i=0; i< keys.length; i++){
-                messageMap.put(Long.parseLong(keys[i]),messageStrings[i]);
+
+            // put values into map
+            Map<Long, String> messageMap = new HashMap<>();
+            for (int i = 0; i < keys.length; i++) {
+                messageMap.put(Long.parseLong(keys[i]), messageStrings[i]);
             }
             StringBuilder builder = new StringBuilder();
+
+            // get iterator from result code list and build error message
             Iterator<Long> iterator = result.iterator();
             builder.append(getString(R.string.first_error_code) + messageMap.get(iterator.next()));
             while (iterator.hasNext()) {
@@ -74,14 +92,46 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * generating random ProductEntities. In this case we use "magic numbers" for generating
+     * random numbers in order to get different Entity values. Later this method will be erased.
+     * @return a new instance of Entity
+     */
     private ProductEntity generateEntity() {
         Random random = new Random();
+
+        // creating empty Product Entity
         ProductEntity entityToReturn = new ProductEntity();
+
+        // set it's name
         entityToReturn.setProductName("Product Name-" + String.valueOf(random.nextInt(10000)));
-      //  entityToReturn.setSupplierName("Supplier-" + String.valueOf(random.nextInt(100)));
-        entityToReturn.setSupplierPhone(String.valueOf(random.nextInt(999999) + 1000000));
-      //  entityToReturn.setQuantity(random.nextInt(100));
+
+        // load one Supplier Entity out of 3.
+        SupplierEntity supplier = SupplierEntityManager.getInstance().findEntityById((long) (random.nextInt(3) + 1), getApplicationContext());
+
+        // setting up non-null Product Entity fields
+        entityToReturn.setSupplierEntity(supplier);
+        entityToReturn.setQuantity(random.nextInt(100));
         entityToReturn.setPrice(random.nextInt(100) + 10);
+
+        // return new Entity
         return entityToReturn;
+    }
+
+    // helper method to add some Suppliers
+    private void generateTheSuppliers() {
+        SupplierEntity entity1 = new SupplierEntity();
+        entity1.setSupplierName("ACME Company");
+        entity1.setSupplierPhone("555-1234");
+        SupplierEntity entity2 = new SupplierEntity();
+        entity2.setSupplierName("Da Compani");
+        entity2.setSupplierPhone("432-1555");
+        SupplierEntity entity3 = new SupplierEntity();
+        entity3.setSupplierName("The Monsters Inc.");
+        entity3.setSupplierPhone("Scream-99");
+        SupplierEntityManager manager = SupplierEntityManager.getInstance();
+        manager.insert(entity1, getApplicationContext());
+        manager.insert(entity2, getApplicationContext());
+        manager.insert(entity3, getApplicationContext());
     }
 }

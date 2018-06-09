@@ -2,10 +2,9 @@ package net.sytes.csongi.inventoryapp.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,69 +14,73 @@ import java.util.List;
  * 3) modifying database records through ProductEntities modified by clients
  * 4) deleting database records through ProductEntities
  */
-public class ProductEntityManager {
+public class ProductEntityManager extends InventoryEntityManager<ProductEntity> {
 
-    private static final String LOG_TAG=ProductEntityManager.class.getSimpleName()+"--->";
-    private Context mContext;
+    private static final String LOG_TAG = ProductEntityManager.class.getSimpleName() + "--->";
 
-    public ProductEntityManager(Context mContext) {
-        this.mContext = mContext;
+    private static volatile ProductEntityManager sInstance;
+
+    private ProductEntityManager() {
+        super(InventoryContract.ProductEntry.TABLE_NAME);
     }
 
-    public ProductEntity findProductById(long id) {
-        return null;
+    public static ProductEntityManager getInstance() {
+        if (sInstance == null) synchronized (ProductEntityManager.class) {
+            sInstance = new ProductEntityManager();
+        }
+        return sInstance;
     }
 
-    public List<ProductEntity> findAllProducts() {
-        return null;
+    // Overriding abstract template methods from InventoryEntityManager
+    @Override
+    Entity getEntityFromCursor(Cursor cursor, Context context) {
+
+        // parsing results from Cursor object
+        long itemId=cursor.getLong(0);
+        String productName=cursor.getString(1);
+        int price=cursor.getInt(2);
+        int quantity=cursor.getInt(3);
+        long supplierId=cursor.getLong(4);
+
+        // finding Supplier Entity belongs to this Product
+        SupplierEntity supplierEntity= SupplierEntityManager.getInstance().findEntityById(supplierId, context);
+
+        // creating Product Entity from result values and return it
+        ProductEntity productEntity=new ProductEntity();
+        productEntity.setId(itemId);
+        productEntity.setProductName(productName);
+        productEntity.setPrice(price);
+        productEntity.setQuantity(quantity);
+        productEntity.setSupplierEntity(supplierEntity);
+        Log.d(LOG_TAG,"Product from cursor has been created");
+        return productEntity;
     }
 
-    /**
-     * Persist ProductEntity into database.
-     * @param productEntity the Product which has to be persisted
-     * @return - a List<Long> contains codes:
-     *          1) _id(long) of product row (only 1 element List) OR
-     *          2) -1L in case of db error (only 1 element List) OR
-     *          3) more than one element List of error codes. For error codes
-     *              @see @{@link ErrorCodes}
-     */
-    public List<Long> insertProduct(ProductEntity productEntity) {
-        // Creating empty result list
-        List<Long> resultList = new ArrayList<>();
+    @Override
+    protected List<Long> checkFields(List<Long> resultList, Entity entity) {
 
-        /* Checking those not null fields that has no default values. If some of those
-        fields are empty, an appropriate error code will be added to resultList */
-        if (productEntity.getProductName() == null || productEntity.getProductName().length() == 0)
+        // checking whether all not-null fields has been filled.
+        ProductEntity productEntity = (ProductEntity)entity;
+        if (productEntity.getProductName() == null || productEntity.getProductName().length() < 1) {
             resultList.add((long) ErrorCodes.PRODUCT_NAME_EMPTY_ERROR);
-        if (productEntity.getSupplierEntity() == null)
+            Log.d(LOG_TAG,"Product name empty error");
+        }
+        if (productEntity.getSupplierEntity() == null) {
             resultList.add((long) ErrorCodes.NO_SUPPLIER_SELECTED);
-
-        /* If there are no errors, we try to persist the ProductEntity into database
-         * First we create ContentValues then
-         * we get writable database from dbHelper and
-         * insert Product into table
-         */
-        if(resultList.isEmpty()){
-            ContentValues contentValues=new ContentValues();
-            contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_PRODUCT_NAME,productEntity.getProductName());
-            contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_PRICE,productEntity.getPrice());
-            contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_QUANTITY,productEntity.getQuantity());
-            contentValues.put(InventoryContract.ProductEntry.COLUMN_NAME_SUPPLIER_ID,productEntity.getSupplierEntity().getmId());
-
-            ProductDbHelper helper=new ProductDbHelper(mContext);
-            SQLiteDatabase database=helper.getWritableDatabase();
-            Long result=database.insert(InventoryContract.ProductEntry.TABLE_NAME,null,contentValues);
-            resultList.add(result);
-            Log.d(LOG_TAG,"Product has been created. Id: "+result.toString());
+            Log.d(LOG_TAG,"No supplier selected error");
         }
         return resultList;
     }
 
-    public boolean updateProduct(ProductEntity productEntity) {
-        return false;
-    }
-
-    public boolean deleteProduct(ProductEntity productEntity) {
-        return false;
+    @Override
+    protected ContentValues getContentValues(Entity entity) {
+        ContentValues contentValuesToReturn = new ContentValues();
+        ProductEntity productEntity=(ProductEntity)entity;
+        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_PRODUCT_NAME, productEntity.getProductName());
+        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_PRICE, productEntity.getPrice());
+        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_QUANTITY, productEntity.getQuantity());
+        contentValuesToReturn.put(InventoryContract.ProductEntry.COLUMN_NAME_SUPPLIER_ID, productEntity.getSupplierEntity().getId());
+        Log.d(LOG_TAG,"Product content values has been created");
+        return contentValuesToReturn;
     }
 }

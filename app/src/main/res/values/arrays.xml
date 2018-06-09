@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="error_code_keys">
+        <item>@string/error_result_ok_key</item>
         <item>@string/error_no_results_key</item>
         <item>@string/error_unknown_error_key</item>
         <item>@string/error_db_write_error_key</item>
         <item>@string/error_product_name_empty_key</item>
         <item>@string/error_supplier_name_empty_key</item>
         <item>@string/error_supplier_phone_empty_key</item>
+        <item>@string/error_no_supplier_selected_key</item>
     </string-array>
     <string-array name="error_code_values">
+        <item>@string/error_result_ok_value</item>
         <item>@string/error_no_results_value</item>
         <item>@string/error_unknown_error_value</item>
         <item>@string/error_db_write_error_value</item>
         <item>@string/error_product_name_empty_value</item>
         <item>@string/error_supplier_name_empty_value</item>
         <item>@string/error_supplier_phone_empty_value</item>
+        <item>@string/error_no_supplier_selected_value</item>
     </string-array>
 </resources>
