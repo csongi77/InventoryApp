@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
+import net.sytes.csongi.inventoryapp.data.Entity;
 import net.sytes.csongi.inventoryapp.data.ErrorCodes;
 import net.sytes.csongi.inventoryapp.data.NullEntity;
 import net.sytes.csongi.inventoryapp.data.ProductEntity;
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         unbinder = ButterKnife.bind(this);
 
         // Create some Supplier records if there are no suppliers added to DB yet
-        if (SupplierEntityManager.getInstance().findEntityById(MINIMUM_NUMBER_OF_SUPPLIERS,
-                getApplicationContext()).getId() < ErrorCodes.RESULT_OK) {
+        Entity toCheck=SupplierEntityManager.getInstance().findEntityById(MINIMUM_NUMBER_OF_SUPPLIERS,getApplicationContext());
+        if (toCheck.getId() < ErrorCodes.RESULT_OK) {
             generateTheSuppliers();
         }
 

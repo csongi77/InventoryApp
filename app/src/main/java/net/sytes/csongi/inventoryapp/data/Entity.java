@@ -5,7 +5,7 @@ import android.os.Parcelable;
 /**
  * Basic Entity
  */
-interface Entity extends Parcelable{
+public interface Entity extends Parcelable{
     long getId();
     void setId(long id);
 }
