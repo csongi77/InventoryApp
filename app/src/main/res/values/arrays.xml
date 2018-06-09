@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- errror message array (key-value parirs) -->
 <resources>
     <string-array name="error_code_keys">
         <item>@string/error_result_ok_key</item>

@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         // If the result's first element's ID (which code is positive) we display the ID of the new Entity
         if (result.size() == ONLY_ONE_RESULT && result.get(FIRST_RESULT) > ErrorCodes.RESULT_OK) {
-            String toDisplay = String.format(getApplicationContext().getString(R.string.response_string), result.get(FIRST_RESULT), productEntity.getProductName());
+            String toDisplay = String.format(getApplicationContext().getString(R.string.response_string), result.get(FIRST_RESULT), productEntity.getProductName(),
+                    productEntity.getSupplierEntity().getSupplierName());
             mResponseMessage.setText(toDisplay);
         } else {
             // Else we get the result codes and messages from a resources array
