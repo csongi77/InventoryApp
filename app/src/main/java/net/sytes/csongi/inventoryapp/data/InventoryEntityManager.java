@@ -62,36 +62,6 @@ public abstract class InventoryEntityManager <T extends Entity> {
         return entityToReturn;
     }
 
-    /**
-     * Method for listing all Entities
-     *
-     * @param context - the Context called from
-     * @return - Entity result list. If there were no results, a List with a single
-     * NullEntity will be retunrned (containing the error code)
-     */
-    public List<T> findAllEntity(Context context) {
-        InventoryDbHelper helper = new InventoryDbHelper(context);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.query(mTableName, null,
-                null, null,
-                null, null, null);
-        T entity;
-        List<T> entitiesResult = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            entity = getEntityFromCursor(cursor, context);
-            entitiesResult.add(entity);
-            Log.d(LOG_TAG,"findAllEntity result with id:="+String.valueOf(entity.getId())+"added to result list");
-        }
-
-        // We close the Cursor in order to avoid memory leak
-        cursor.close();
-        if (entitiesResult.isEmpty()) {
-            entity = (T) new NullEntity((long)ErrorCodes.NO_RESULTS);
-            entitiesResult.add(entity);
-            Log.d(LOG_TAG,"findAllEntity has no result!");
-        }
-        return entitiesResult;
-    }
 
     /**
      * Abstract method for generating Entity from Cursor
@@ -143,11 +113,5 @@ public abstract class InventoryEntityManager <T extends Entity> {
 
     // Creating ContentValues for inserting rows into appropriate table
     protected abstract ContentValues getContentValues(T entity);
-
-    /* Not implemented yet
-    public abstract boolean update(Entity entity, Context context);
-
-    public abstract boolean delete(Entity entity, Context context);
-    */
 
 }
