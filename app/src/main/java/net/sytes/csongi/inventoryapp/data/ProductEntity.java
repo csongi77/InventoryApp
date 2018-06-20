@@ -6,10 +6,18 @@ import android.os.Parcelable;
 /**
  * Entity class for product
  */
+<<<<<<< HEAD
 public class ProductEntity implements Parcelable {
     private long mId;
     private int mPrice, mQuantity;
     private String mProductName, mSupplierName, mSupplierPhone;
+=======
+public class ProductEntity implements Entity {
+    private long mId;
+    private int mPrice, mQuantity;
+    private String mProductName;
+    private SupplierEntity mSupplierEntity;
+>>>>>>> 76a1a2bc9c9c7bf36386fdb06f0ee4d4144cd711
 
     /**
      * An emtpy Ctor
@@ -26,8 +34,7 @@ public class ProductEntity implements Parcelable {
         mPrice = in.readInt();
         mQuantity = in.readInt();
         mProductName = in.readString();
-        mSupplierName = in.readString();
-        mSupplierPhone = in.readString();
+        mSupplierEntity = in.readParcelable(SupplierEntity.class.getClassLoader());
     }
 
     public static final Creator<ProductEntity> CREATOR = new Creator<ProductEntity>() {
@@ -46,10 +53,15 @@ public class ProductEntity implements Parcelable {
      * Getter for entity's Id
      * @return the id
      */
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> 76a1a2bc9c9c7bf36386fdb06f0ee4d4144cd711
     public long getId() {
         return mId;
     }
 
+<<<<<<< HEAD
     /**
      * Since only EntityManager can access to database and none of the clients can
      * set this value directly, the setter remains package private
@@ -57,6 +69,11 @@ public class ProductEntity implements Parcelable {
      */
     void setId(long id) {
         this.mId=id;
+=======
+    @Override
+    public void setId(long id){
+        mId=id;
+>>>>>>> 76a1a2bc9c9c7bf36386fdb06f0ee4d4144cd711
     }
 
     /**
@@ -96,28 +113,41 @@ public class ProductEntity implements Parcelable {
     }
 
     /**
-     * Getter and setter for Supplier Name
+     * Getter and setter for Supplier
      * @return String - Name of supplier
      */
-    public String getSupplierName() {
-        return mSupplierName;
+    public SupplierEntity getSupplierEntity() {
+        return mSupplierEntity;
     }
 
-    public void setSupplierName(String supplierName) {
-        this.mSupplierName = supplierName;
+    public void setSupplierEntity(SupplierEntity supplierEntity) {
+        this.mSupplierEntity = supplierEntity;
     }
 
-    /**
-     * Getter and setter for Supplier phone. Since there might be other characters than digits,
-     * this field type is String
-     * @return String - Phone number of Supplier
-     */
-    public String getSupplierPhone() {
-        return mSupplierPhone;
+    // Overriding equals and hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProductEntity that = (ProductEntity) o;
+
+        if (mId != that.mId) return false;
+        if (mPrice != that.mPrice) return false;
+        if (mQuantity != that.mQuantity) return false;
+        if (mProductName != null ? !mProductName.equals(that.mProductName) : that.mProductName != null)
+            return false;
+        return mSupplierEntity != null ? mSupplierEntity.equals(that.mSupplierEntity) : that.mSupplierEntity == null;
     }
 
-    public void setSupplierPhone(String supplierPhone) {
-        this.mSupplierPhone = supplierPhone;
+    @Override
+    public int hashCode() {
+        int result = (int) (mId ^ (mId >>> 32));
+        result = 31 * result + mPrice;
+        result = 31 * result + mQuantity;
+        result = 31 * result + (mProductName != null ? mProductName.hashCode() : 0);
+        result = 31 * result + (mSupplierEntity != null ? mSupplierEntity.hashCode() : 0);
+        return result;
     }
 
     /**
@@ -135,7 +165,6 @@ public class ProductEntity implements Parcelable {
         dest.writeInt(mPrice);
         dest.writeInt(mQuantity);
         dest.writeString(mProductName);
-        dest.writeString(mSupplierName);
-        dest.writeString(mSupplierPhone);
+        dest.writeParcelable(mSupplierEntity, flags);
     }
 }

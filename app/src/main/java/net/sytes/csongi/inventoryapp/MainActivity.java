@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
+
 import net.sytes.csongi.inventoryapp.data.ProductEntity;
 import net.sytes.csongi.inventoryapp.data.ProductEntityManager;
+
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,9 +22,11 @@ import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity {
 
+
     @BindView(R.id.txt_response_message)
     TextView mResponseMessage;
     @BindView(R.id.btn_dummy) Button mButton;
+
     private Unbinder unbinder;
 
     @Override
