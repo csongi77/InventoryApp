@@ -7,7 +7,8 @@ import android.os.Parcelable;
  * Entity class for product
  */
 public class ProductEntity implements Parcelable {
-    private int mId, mPrice, mQuantity;
+    private long mId;
+    private int mPrice, mQuantity;
     private String mProductName, mSupplierName, mSupplierPhone;
 
     /**
@@ -21,7 +22,7 @@ public class ProductEntity implements Parcelable {
      * @param in
      */
     protected ProductEntity(Parcel in) {
-        mId = in.readInt();
+        mId = in.readLong();
         mPrice = in.readInt();
         mQuantity = in.readInt();
         mProductName = in.readString();
@@ -45,7 +46,7 @@ public class ProductEntity implements Parcelable {
      * Getter for entity's Id
      * @return the id
      */
-    public int getId() {
+    public long getId() {
         return mId;
     }
 
@@ -54,7 +55,7 @@ public class ProductEntity implements Parcelable {
      * set this value directly, the setter remains package private
      * @param id the id of Entity which was retreived from database
      */
-    void setId(int id) {
+    void setId(long id) {
         this.mId=id;
     }
 
@@ -130,7 +131,7 @@ public class ProductEntity implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mId);
+        dest.writeLong(mId);
         dest.writeInt(mPrice);
         dest.writeInt(mQuantity);
         dest.writeString(mProductName);
