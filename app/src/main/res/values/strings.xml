@@ -2,36 +2,54 @@
     <string name="app_name">InventoryApp</string>
 
     <string name="response_string">Entity created. Id: <xliff:g name="id">%d</xliff:g>,
+<<<<<<< HEAD
+        productName<xliff:g name="product_name">%s</xliff:g></string>
+=======
         productName<xliff:g name="product_name">%s</xliff:g>, Supplier: <xliff:g name="supplier">
             %s</xliff:g></string>
+>>>>>>> 76a1a2bc9c9c7bf36386fdb06f0ee4d4144cd711
     <string name="response_error_message">Insert was unsuccessful due to following
         errors:<xliff:g name="error">%s</xliff:g></string>
     <string name="create_dummy_product">Create dummy Product</string>
 
     <!-- Error message string keys -->
+<<<<<<< HEAD
+=======
     <string name="error_result_ok_key" translatable="false">0</string>
+>>>>>>> 76a1a2bc9c9c7bf36386fdb06f0ee4d4144cd711
     <string name="error_db_write_error_key" translatable="false">-1</string>
     <string name="error_product_name_empty_key" translatable="false">-2</string>
     <string name="error_supplier_name_empty_key" translatable="false">-3</string>
     <string name="error_supplier_phone_empty_key" translatable="false">-4</string>
     <string name="error_unknown_error_key" translatable="false">-5</string>
     <string name="error_no_results_key" translatable="false">-6</string>
+<<<<<<< HEAD
+
+    <!-- Error message string values-->
+=======
     <string name="error_no_supplier_selected_key" translatable="false">-7</string>
 
     <!-- Error message string values-->
     <string name="error_result_ok_value">OK</string>
+>>>>>>> 76a1a2bc9c9c7bf36386fdb06f0ee4d4144cd711
     <string name="error_db_write_error_value">Database write error.</string>
     <string name="error_product_name_empty_value">The product name must not be empty.</string>
     <string name="error_supplier_name_empty_value">The supplier name must not be empty.</string>
     <string name="error_supplier_phone_empty_value">The supplier phone number must not be empty.</string>
     <string name="error_unknown_error_value">Unknown error.</string>
     <string name="error_no_results_value">There are no valid results.</string>
+<<<<<<< HEAD
+=======
     <string name="error_no_supplier_selected_value">No supplier selected.</string>
 
     <!-- Error message parts -->
+>>>>>>> 76a1a2bc9c9c7bf36386fdb06f0ee4d4144cd711
     <string name="first_error_code">Error code:</string>
     <string name="following_error_codes">, error code:</string>
 
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 76a1a2bc9c9c7bf36386fdb06f0ee4d4144cd711
 </resources>
