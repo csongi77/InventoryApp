@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ProductListActivity"
+            android:parentActivityName=".MainActivity">
+
+        </activity>
         <provider
             android:authorities="net.sytes.csongi.inventoryapp"
             android:name=".data.InventoryProvider"/>

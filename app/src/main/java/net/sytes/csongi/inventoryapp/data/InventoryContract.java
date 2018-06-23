@@ -1,48 +1,105 @@
 package net.sytes.csongi.inventoryapp.data;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
  * Contract for products
  */
-final class InventoryContract {
+public final class InventoryContract {
 
     // defining constants: content authority, base content uri and path for Products and Suppliers
-    private static final String CONTENT_AUTHORITY="net.sytes.csongi.inventoryapp";
-    private static final Uri BASE_CONTENT_URI=Uri.parse("content://"+CONTENT_AUTHORITY);
-    private static final String PATH_PRODUCTS="products";
-    private static final String PATH_SUPPLIERS="suppliers";
+    public static final String CONTENT_AUTHORITY="net.sytes.csongi.inventoryapp";
+    public static final Uri BASE_CONTENT_URI=Uri.parse("content://"+CONTENT_AUTHORITY);
+    public static final String PATH_PRODUCTS="products";
+    public static final String PATH_SUPPLIERS="suppliers";
 
     // empty constructor for avoiding instantiating this class
     private InventoryContract() {
     }
 
     // the product table contract
-    static class ProductEntry implements BaseColumns {
+    public static class ProductEntry implements BaseColumns {
 
-        // defining table name
+        /** defining table name */
         public static final String TABLE_NAME="products";
 
+        /** content uri for products */
+        public static final Uri CONTENT_URI=Uri.withAppendedPath(BASE_CONTENT_URI,PATH_PRODUCTS);
 
+        /** Defining MIME type for directory */
+        public static final String CONTENT_LIST_TYPE= ContentResolver.CURSOR_DIR_BASE_TYPE+"/"+CONTENT_AUTHORITY+"/"+PATH_PRODUCTS;
 
-        // defining columns
+        /** Defining MIME type for single item */
+        public static final String CONTENT_ITEM_TYPE= ContentResolver.CURSOR_ITEM_BASE_TYPE+"/"+CONTENT_AUTHORITY+"/"+PATH_PRODUCTS;
+
+        /**
+         * Id of product
+         *  type: long, not null, autoincrement
+         */
         public static final String _ID=BaseColumns._ID;
+
+        /**
+         * Name of product
+         * type: String, not null
+         */
         public static final String COLUMN_NAME_PRODUCT_NAME ="product_name";
+
+        /**
+         * Price of product
+         * type: int, not null, default 0
+         */
         public static final String COLUMN_NAME_PRICE ="price";
+
+        /**
+         * Quantity of product
+         * type: int, not null, default 0
+         */
         public static final String COLUMN_NAME_QUANTITY ="quantity";
+
+        /**
+         * Supplier Id (key for supplier _ID)
+         * type: long, not null, default 0
+         * if supplier is removed, this value must set to -1L
+         */
         public static final String COLUMN_NAME_SUPPLIER_ID="supplier_id";
 
     }
 
     // the supplier table contract
-    static class SupplierEntry implements BaseColumns {
+    public static class SupplierEntry implements BaseColumns {
 
-        // defining columns
+        /** Table name */
         public static final String TABLE_NAME="suppliers";
+
+        /** content uri for products */
+        public static final Uri CONTENT_URI=Uri.withAppendedPath(BASE_CONTENT_URI,PATH_SUPPLIERS);
+
+        /** Defining MIME type for directory */
+        public static final String CONTENT_LIST_TYPE= ContentResolver.CURSOR_DIR_BASE_TYPE+"/"+CONTENT_AUTHORITY+"/"+PATH_SUPPLIERS;
+
+        /** Defining MIME type for single item */
+        public static final String CONTENT_ITEM_TYPE= ContentResolver.CURSOR_ITEM_BASE_TYPE+"/"+CONTENT_AUTHORITY+"/"+PATH_SUPPLIERS;
+
+        /**
+         * Id of Supplier
+         * type: long, not null, autoincrement
+         */
         public static final String _ID=BaseColumns._ID;
+
+        /**
+         * Supplier name
+         * type: String, not null
+         */
         public static final String COLUMN_NAME_SUPPLIER_NAME ="supplier_name";
+
+        /**
+         * Supplier phone
+         * type: String, not null
+         */
         public static final String COLUMN_NAME_SUPPLIER_PHONE ="supplier_phone";
 
     }
