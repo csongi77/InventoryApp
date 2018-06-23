@@ -23,7 +23,7 @@ public class InventoryProvider extends ContentProvider {
     static {
         sMatcher.addURI(CONTENT_AUTHORITY, PATH_PRODUCTS + "/#", PRODUCT_ID);
         sMatcher.addURI(CONTENT_AUTHORITY, PATH_PRODUCTS, PRODUCTS);
-        sMatcher.addURI(CONTENT_AUTHORITY,PATH_SUPPLIERS+"/#", SUPPLIER_ID);
+        sMatcher.addURI(CONTENT_AUTHORITY, PATH_SUPPLIERS + "/#", SUPPLIER_ID);
         sMatcher.addURI(CONTENT_AUTHORITY, PATH_SUPPLIERS, SUPPLIERS);
     }
 
@@ -39,32 +39,33 @@ public class InventoryProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         // checking query
-        int queryType=sMatcher.match(uri);
+        int queryType = sMatcher.match(uri);
 
         // declare Cursor
-        Cursor cursor=null;
+        Cursor cursor = null;
 
         // obtaining readable db
-        SQLiteDatabase db=mInventoryDbHelper.getReadableDatabase();
+        SQLiteDatabase db = mInventoryDbHelper.getReadableDatabase();
 
-        switch (queryType){
+        switch (queryType) {
             case PRODUCT_ID:
-                selection=ProductEntry._ID+"=?";
-                selectionArgs=new String[]{String.valueOf(ContentUris.parseId(uri))};
-                cursor=db.query(ProductEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                selection = ProductEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                cursor = db.query(ProductEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case PRODUCTS:
-                cursor=db.query(ProductEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                cursor = db.query(ProductEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case SUPPLIER_ID:
-                selection=SupplierEntry._ID+"=?";
-                selectionArgs=new String[]{String.valueOf(ContentUris.parseId(uri))};
-                cursor=db.query(SupplierEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                selection = SupplierEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                cursor = db.query(SupplierEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case SUPPLIERS:
-                cursor=db.query(SupplierEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                cursor = db.query(SupplierEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
-                default: throw new IllegalArgumentException("Cannot query this URI: "+uri);
+            default:
+                throw new IllegalArgumentException("Cannot query this URI: " + uri);
         }
         return cursor;
     }
@@ -72,8 +73,8 @@ public class InventoryProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        int match=sMatcher.match(uri);
-        switch (match){
+        int match = sMatcher.match(uri);
+        switch (match) {
             case PRODUCT_ID:
                 return ProductEntry.CONTENT_ITEM_TYPE;
             case PRODUCTS:
@@ -82,14 +83,83 @@ public class InventoryProvider extends ContentProvider {
                 return SupplierEntry.CONTENT_ITEM_TYPE;
             case SUPPLIERS:
                 return SupplierEntry.CONTENT_LIST_TYPE;
-                default: throw new IllegalArgumentException("Wrong URI: "+uri);
+            default:
+                throw new IllegalArgumentException("Wrong URI: " + uri);
         }
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        int match = sMatcher.match(uri);
+        Long id = null;
+        switch (match) {
+            case PRODUCTS:
+                id = insertProduct(uri, values);
+                if (id == -1) return null;
+                else {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                    return Uri.withAppendedPath(uri, String.valueOf(id));
+                }
+            case SUPPLIERS:
+                id = insertSupplier(uri, values);
+                if (id == -1) return null;
+                else {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+            default:
+                throw new IllegalArgumentException("Adding new entity failure from uri: " + uri);
+        }
+    }
+
+    /**
+     * Insert new Supplier
+     *
+     * @param uri    - the target uri
+     * @param values - the Content Values to insert
+     * @return the id of Supplier
+     */
+    private Long insertSupplier(Uri uri, ContentValues values) {
+        /*
+         * Sanity check
+         */
+        String supplierName=values.getAsString(SupplierEntry.COLUMN_NAME_SUPPLIER_NAME);
+        if(supplierName==null||supplierName.isEmpty()) return null;
+
+        String supplierPhone=values.getAsString(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE);
+        if(supplierPhone==null||supplierPhone.isEmpty()) return null;
+
+        SQLiteDatabase db=mInventoryDbHelper.getWritableDatabase();
+        long id=db.insert(SupplierEntry.TABLE_NAME,null,values);
+        return id;
+    }
+
+    /**
+     * Insert new Product
+     *
+     * @param uri    - the target uri
+     * @param values - the Content Values
+     * @return id of new product OR null
+     */
+    private long insertProduct(Uri uri, ContentValues values) {
+        /*
+         * Sanity check. We don't have to check quantity and price since they have default
+         * value (=0)
+         */
+        String productName = values.getAsString(ProductEntry.COLUMN_NAME_PRODUCT_NAME);
+        if (productName == null || productName.isEmpty())
+            throw new IllegalArgumentException("Product Name must be set");
+
+        Long supplierId = values.getAsLong(ProductEntry.COLUMN_NAME_SUPPLIER_ID);
+        if (supplierId == null || supplierId < 0)
+            throw new IllegalArgumentException("Supplier must be set");
+
+        // getting writeable database reference
+        SQLiteDatabase db = mInventoryDbHelper.getWritableDatabase();
+
+        // add new entry
+        long result = db.insert(ProductEntry.TABLE_NAME, null, values);
+        return result;
     }
 
     @Override
