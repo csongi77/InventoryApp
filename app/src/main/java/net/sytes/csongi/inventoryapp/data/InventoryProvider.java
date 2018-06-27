@@ -106,6 +106,7 @@ public class InventoryProvider extends ContentProvider {
                 if (id == -1) return null;
                 else {
                     getContext().getContentResolver().notifyChange(uri, null);
+                    return Uri.withAppendedPath(uri, String.valueOf(id));
                 }
             default:
                 throw new IllegalArgumentException("Adding new entity failure from uri: " + uri);
@@ -129,7 +130,10 @@ public class InventoryProvider extends ContentProvider {
         String supplierPhone=values.getAsString(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE);
         if(supplierPhone==null||supplierPhone.isEmpty()) return null;
 
+        // getting writeable database reference
         SQLiteDatabase db=mInventoryDbHelper.getWritableDatabase();
+
+        // add new entry
         long id=db.insert(SupplierEntry.TABLE_NAME,null,values);
         return id;
     }

@@ -26,6 +26,14 @@
     <!-- Error message parts -->
     <string name="first_error_code">Error code:</string>
     <string name="following_error_codes">, error code:</string>
+    <string name="activity_label_product_list">Product List</string>
+
+    <!-- edit item menu items -->
+    <string name="save_menu_item">Save</string>
+    <string name="delete_menu_item">Delete this item...</string>
+
+    <!-- main menu items -->
+    <string name="edit_suppliers_main_menu_item">Suppliers...</string>
 
 
 </resources>

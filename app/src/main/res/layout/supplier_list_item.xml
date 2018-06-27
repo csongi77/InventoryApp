@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/supplier_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <!-- holder for name and phone -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="6dp"
+        android:gravity="center">
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Large"
+            android:id="@+id/list_item_supplier_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Supplier name example" />
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:id="@+id/list_item_supplier_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Supplier phone number" />
+    </LinearLayout>
+
+    <!-- call supplier icon -->
+    <ImageView
+        android:id="@+id/call_supplier_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_call"
+        android:layout_margin="12dp"
+        android:layout_gravity="center" />
+
+    <!-- edit supplier icon -->
+    <ImageView
+        android:id="@+id/list_item_edit_supplier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_mode_edit"
+        android:layout_margin="12dp"
+        android:layout_gravity="center" />
+
+</LinearLayout>
