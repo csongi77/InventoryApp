@@ -8,26 +8,32 @@
 
     <!-- holder for name and phone -->
     <LinearLayout
+        android:id="@+id/supplier_name_and_phone_field"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="6dp"
-        android:gravity="center">
+        android:padding="6dp"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Large"
             android:id="@+id/list_item_supplier_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Supplier name example" />
+            tools:text="Supplier name example"
+            android:textColor="#2B3D4D" />
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Body1"
             android:id="@+id/list_item_supplier_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Supplier phone number" />
+            tools:text="Supplier phone number"
+            android:textColor="#AEB6BD"/>
     </LinearLayout>
 
     <!-- call supplier icon -->
@@ -36,16 +42,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_call"
-        android:layout_margin="12dp"
-        android:layout_gravity="center" />
+        android:padding="12dp"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        />
 
     <!-- edit supplier icon -->
     <ImageView
-        android:id="@+id/list_item_edit_supplier"
+        android:id="@+id/edit_supplier_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_mode_edit"
-        android:layout_margin="12dp"
-        android:layout_gravity="center" />
-
+        android:padding="12dp"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        />
+-->
 </LinearLayout>

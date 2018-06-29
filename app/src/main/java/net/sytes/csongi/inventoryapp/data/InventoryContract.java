@@ -17,6 +17,11 @@ public final class InventoryContract {
     public static final String PATH_PRODUCTS="products";
     public static final String PATH_SUPPLIERS="suppliers";
 
+    /**
+     * constant value for every insertation error.
+     */
+    public static final long INSERT_ERROR=-1L;
+
     // empty constructor for avoiding instantiating this class
     private InventoryContract() {
     }
@@ -67,6 +72,11 @@ public final class InventoryContract {
          */
         public static final String COLUMN_NAME_SUPPLIER_ID="supplier_id";
 
+        /**
+         * Error code in order to let the client know that supplier of this product has been deleted
+         * type: long
+         */
+        public static final long SUPPLIER_HAS_BEEN_REMOVED=-2L;
     }
 
     // the supplier table contract

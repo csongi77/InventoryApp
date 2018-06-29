@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,12 +27,12 @@ public class SuppliersListActivity extends AppCompatActivity implements LoaderMa
 
     private static final int SUPPLIER_LOADER = 42;
 
-    @BindView(R.id.product_list_view)
-    ListView mSupplierListView;
+
+
     @BindView(R.id.fab_new_product)
     FloatingActionButton mNewSupplierButton;
-    @BindView(R.id.list_is_empty)
-    ImageView mEmptyView;
+//    @BindView(R.id.list_is_empty)
+//    ImageView mEmptyView;
 
     Unbinder unbinder;
     private CursorAdapter mAdapter;
@@ -41,25 +43,32 @@ public class SuppliersListActivity extends AppCompatActivity implements LoaderMa
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
         setTitle("Suppliers...");
-        mSupplierListView.setEmptyView(mEmptyView);
-        mAdapter = new SupplierCursorAdapter(this, null);
-        mSupplierListView.setAdapter(mAdapter);
 
         mNewSupplierButton.setOnClickListener(v -> {
             openEditSupplierWindow(SupplierEntry.CONTENT_URI);
         });
 
-            getLoaderManager().initLoader(SUPPLIER_LOADER, null, this);
+        ListView mSupplierListView=findViewById(R.id.product_list_view);
+        ImageView mEmptyView=findViewById(R.id.list_is_empty);
+        mSupplierListView.setEmptyView(mEmptyView);
+
+        mAdapter = new SupplierCursorAdapter(this,null);
+        mSupplierListView.setAdapter(mAdapter);
+
+        getLoaderManager().initLoader(SUPPLIER_LOADER, null, this);
 
     }
 
+
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Loader loader = null;
-        if (id == SUPPLIER_LOADER) {
-            loader = new CursorLoader(getApplicationContext(), SupplierEntry.CONTENT_URI, null, null, null, null);
-        }
-        return loader;
+        String [] projection = new String[]{
+          SupplierEntry._ID,
+          SupplierEntry.COLUMN_NAME_SUPPLIER_NAME,
+          SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE
+        };
+        return new CursorLoader(this, SupplierEntry.CONTENT_URI, projection, null, null, null);
     }
 
     @Override

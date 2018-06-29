@@ -24,6 +24,7 @@
         android:id="@+id/edit_supplier_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter phone number here"/>
+        android:hint="Enter phone number here"
+        android:inputType="phone"/>
 
 </LinearLayout>

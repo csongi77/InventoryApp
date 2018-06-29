@@ -52,8 +52,7 @@ public class MainActivity extends AppCompatActivity {
         switch (menuItemId) {
             case R.id.edit_suppliers:
                 Log.d(LOG_TAG, "suppliers menu item selected");
-                Intent intent=new Intent(MainActivity.this,SuppliersListActivity.class);
-                intent.setDataAndType(InventoryContract.SupplierEntry.CONTENT_URI, InventoryContract.SupplierEntry.CONTENT_LIST_TYPE);
+                Intent intent=new Intent(getApplicationContext(),SuppliersListActivity.class);
                 startActivity(intent);
                 return true;
             default:
