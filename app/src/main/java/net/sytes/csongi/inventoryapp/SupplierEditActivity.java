@@ -1,12 +1,15 @@
 package net.sytes.csongi.inventoryapp;
 
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,12 +69,10 @@ public class SupplierEditActivity extends AppCompatActivity {
             case R.id.edit_save:
                 Log.w(LOG_TAG, "save has clicked");
                 saveSupplier();
-                finish();
                 return true;
             case R.id.edit_delete:
                 Log.w(LOG_TAG, "delete has clicked");
                 deleteSupplier();
-                finish();
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
         }
@@ -81,8 +82,8 @@ public class SupplierEditActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if(mUri==null){
-            MenuItem item=menu.findItem(R.id.edit_delete);
+        if (mUri == null) {
+            MenuItem item = menu.findItem(R.id.edit_delete);
             item.setVisible(false);
         }
         return true;
@@ -92,10 +93,10 @@ public class SupplierEditActivity extends AppCompatActivity {
     private void setupViews() {
 
         // first me make a query with the specified Uri
-        Cursor supplierCursor=getContentResolver().query(mUri,null,null,null,null);
+        Cursor supplierCursor = getContentResolver().query(mUri, null, null, null, null);
 
         // then we fill out the form (if we have valid result)
-        if(supplierCursor.moveToFirst()){
+        if (supplierCursor.moveToFirst()) {
             mSupplierName.setText(supplierCursor.getString(supplierCursor.getColumnIndexOrThrow(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_NAME)));
             mSupplierPhone.setText(supplierCursor.getString(supplierCursor.getColumnIndexOrThrow(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE)));
         }
@@ -103,29 +104,43 @@ public class SupplierEditActivity extends AppCompatActivity {
 
     // method for deleting current entity
     private void deleteSupplier() {
-        getContentResolver().delete(mUri,null,null);
+        // todo create alert dialog button
+        getContentResolver().delete(mUri, null, null);
+        finish();
     }
 
     /**
      * Helper method for saving Supplier.
      */
     private void saveSupplier() {
+
+        // todo make sanity check before save/update
+
         String supplierName, supplierPhone;
         supplierName = mSupplierName.getText().toString().trim();
         supplierPhone = mSupplierPhone.getText().toString().trim();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_NAME, supplierName);
-        contentValues.put(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE, supplierPhone);
 
-        // if it's an existing Supplier, modify it
-        if (mUri != null) {
-            // todo add update method
+        // save/update data only if values are filled
+        if (!TextUtils.isEmpty(supplierName) && !TextUtils.isEmpty(supplierPhone)) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_NAME, supplierName);
+            contentValues.put(InventoryContract.SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE, supplierPhone);
+
+            // if it's an existing Supplier, modify it
+            if (mUri != null) {
+                int affectedRows = getContentResolver().update(mUri, contentValues, null, null);
+                if (affectedRows > 0)
+                    Toast.makeText(this, "Supplier with id: " + String.valueOf(ContentUris.parseId(mUri)) + " has been modified", Toast.LENGTH_LONG).show();
+            } else {
+                Uri uri = getContentResolver().insert(InventoryContract.SupplierEntry.CONTENT_URI, contentValues);
+                if (uri != null)
+                    Toast.makeText(this, "Supplier with id: " + String.valueOf(ContentUris.parseId(uri)) + " has been added", Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(this, "Error adding supplier", Toast.LENGTH_LONG).show();
+            }
+            finish();
         } else {
-            Uri uri = getContentResolver().insert(InventoryContract.SupplierEntry.CONTENT_URI, contentValues);
-            if (uri != null)
-                Toast.makeText(this, "Supplier with id: " + String.valueOf(ContentUris.parseId(uri)) + " has been added", Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, "Error adding supplier", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "All fields must filled out!", Toast.LENGTH_LONG).show();
         }
     }
 }

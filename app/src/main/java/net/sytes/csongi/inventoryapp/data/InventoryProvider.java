@@ -11,6 +11,7 @@ import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -18,6 +19,8 @@ import java.io.FileNotFoundException;
 import static net.sytes.csongi.inventoryapp.data.InventoryContract.*;
 
 public class InventoryProvider extends ContentProvider {
+
+    private static final String TAG=InventoryProvider.class.getSimpleName();
 
     private static final int PRODUCT_ID = 100;
     private static final int PRODUCTS = 101;
@@ -119,8 +122,8 @@ public class InventoryProvider extends ContentProvider {
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 affectedRows = deleteSupplier(selection, selectionArgs, db);
                 if (affectedRows > 0) {
-                    Toast.makeText(getContext(),"Supplier with id: "+
-                            String.valueOf(ContentUris.parseId(uri))+" has been deleted",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Supplier with id: " +
+                            String.valueOf(ContentUris.parseId(uri)) + " has been deleted", Toast.LENGTH_LONG).show();
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
                 return affectedRows;
@@ -139,16 +142,17 @@ public class InventoryProvider extends ContentProvider {
      * helper method for deleting Supplier from database. This method is also responsible for
      * setting the related Products' supplierId to -2L (which is the default value for 'Supplier removed' state)
      * For further info see InventoryContract.
-     * @param selection
-     * @param selectionArgs
-     * @param db
-     * @return
+     *
+     * @param selection     - either id of Supplier or other column
+     * @param selectionArgs - arguments for column
+     * @param db            - reference of database
+     * @return - the number of affected rows
      */
     private int deleteSupplier(String selection, String[] selectionArgs, SQLiteDatabase db) {
         int affectedRows = 0;
         // before deleting we have to check how many Suppliers will be affected
         String[] columns = new String[]{SupplierEntry._ID};
-        Cursor suppliersCursor = db.query(SupplierEntry.TABLE_NAME,columns,selection,selectionArgs,null,null,null);
+        Cursor suppliersCursor = db.query(SupplierEntry.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
 
         /*
             Now we iterate through the result and do the following:
@@ -160,38 +164,41 @@ public class InventoryProvider extends ContentProvider {
             5) close cursor
          */
 
-        // todo finish this!!!
+        // we have at least 1 result! :)
+        while (suppliersCursor.moveToNext()) {
 
-        affectedRows=db.delete(SupplierEntry.TABLE_NAME,selection,selectionArgs);
+            long supplierId = suppliersCursor.getLong(suppliersCursor.getColumnIndexOrThrow(SupplierEntry._ID));
 
-        if(affectedRows>0){
-            String productSelection=ProductEntry.COLUMN_NAME_SUPPLIER_ID+"=?";
-            String[] productSelectionArgs=selectionArgs;
-            ContentValues values=new ContentValues();
-            values.put(ProductEntry.COLUMN_NAME_SUPPLIER_ID,ProductEntry.SUPPLIER_HAS_BEEN_REMOVED);
-            db.update(ProductEntry.TABLE_NAME,values,productSelection,productSelectionArgs);
+            String productSelection = ProductEntry.COLUMN_NAME_SUPPLIER_ID + "=?";
+            String[] productSelectionArgs = new String[]{String.valueOf(supplierId)};
+            ContentValues values = new ContentValues();
+            values.put(ProductEntry.COLUMN_NAME_SUPPLIER_ID, ProductEntry.SUPPLIER_HAS_BEEN_REMOVED);
+            db.update(ProductEntry.TABLE_NAME, values, productSelection, productSelectionArgs);
+            Log.d(TAG, "supplierCursor moved to ID: "+supplierId);
         }
+        affectedRows = db.delete(SupplierEntry.TABLE_NAME, selection, selectionArgs);
         return affectedRows;
     }
 
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        int match=sMatcher.match(uri);
-        switch (match){
+        int match = sMatcher.match(uri);
+        switch (match) {
             case PRODUCT_ID:
-                selection=ProductEntry._ID+"=?";
-                selectionArgs=new String[]{String.valueOf(ContentUris.parseId(uri))};
+                selection = ProductEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 return updateProduct(uri, values, selection, selectionArgs);
             case PRODUCTS:
                 return updateProduct(uri, values, selection, selectionArgs);
             case SUPPLIER_ID:
-                selection=ProductEntry._ID+"=?";
-                selectionArgs=new String[]{String.valueOf(ContentUris.parseId(uri))};
+                selection = ProductEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 return updateSupplier(uri, values, selection, selectionArgs);
             case SUPPLIERS:
                 return updateSupplier(uri, values, selection, selectionArgs);
-            default: throw new IllegalArgumentException("Failed updating uri: "+uri);
+            default:
+                throw new IllegalArgumentException("Failed updating uri: " + uri);
         }
     }
 
@@ -225,48 +232,50 @@ public class InventoryProvider extends ContentProvider {
 
     /**
      * helper method for modifying Suppliers
-     * @param uri - uri of product
-     * @param values - Content Values to modify
-     * @param selection - columns we want to modify
+     *
+     * @param uri           - uri of product
+     * @param values        - Content Values to modify
+     * @param selection     - columns we want to modify
      * @param selectionArgs - which rows we want to modify
      * @return number of affected rows
      */
     private int updateSupplier(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         /* Sanity check:
          * 1: is Supplier name valid?
-          * 2: is Supplier phone valid?
-          * 3: are there any columns to change? */
-        if(values.containsKey(SupplierEntry.COLUMN_NAME_SUPPLIER_NAME)) {
+         * 2: is Supplier phone valid?
+         * 3: are there any columns to change? */
+        if (values.containsKey(SupplierEntry.COLUMN_NAME_SUPPLIER_NAME)) {
             String supplierNewName = values.getAsString(SupplierEntry.COLUMN_NAME_SUPPLIER_NAME).trim();
             if (TextUtils.isEmpty(supplierNewName))
                 throw new IllegalArgumentException("Supplier Name cannot be empty");
         }
 
-        if(values.containsKey(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE)) {
+        if (values.containsKey(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE)) {
             String supplierNewPhoneNumber = values.getAsString(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE).trim();
             if (TextUtils.isEmpty(supplierNewPhoneNumber))
                 throw new IllegalArgumentException("Supplier Phone number cannot be empty");
         }
 
-        if(values.size()==0) return 0;
+        if (values.size() == 0) return 0;
 
         /* Sanity check OK, no exception has thrown and values has at least one parameter
-        *  So now we get writable database and persist the changes. Then - if at least a single
+         *  So now we get writable database and persist the changes. Then - if at least a single
          *  row has changed - notify observers. */
-        SQLiteDatabase db=mInventoryDbHelper.getWritableDatabase();
+        SQLiteDatabase db = mInventoryDbHelper.getWritableDatabase();
 
-        int affectedRows = db.update(SupplierEntry.TABLE_NAME, values,selection,selectionArgs);
-        if(affectedRows>0){
-            getContext().getContentResolver().notifyChange(uri,null);
+        int affectedRows = db.update(SupplierEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (affectedRows > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
         }
         return affectedRows;
     }
 
     /**
      * helper method for modifying Products
-     * @param uri - uri of product
-     * @param values - Content Values to modify
-     * @param selection - columns we want to modify
+     *
+     * @param uri           - uri of product
+     * @param values        - Content Values to modify
+     * @param selection     - columns we want to modify
      * @param selectionArgs - which rows we want to modify
      * @return number of affected rows
      */
@@ -337,24 +346,25 @@ public class InventoryProvider extends ContentProvider {
 
     /**
      * Check whether Supplier exists with given Id
+     *
      * @param supplierId the Id to check
      * @return true if Supplier exists with given supplerId. False otherwise
      */
     private boolean isSupplierIdValid(Long supplierId) {
-        SQLiteDatabase db=mInventoryDbHelper.getReadableDatabase();
+        SQLiteDatabase db = mInventoryDbHelper.getReadableDatabase();
 
-        if(supplierId==ProductEntry.SUPPLIER_HAS_BEEN_REMOVED)
+        if (supplierId == ProductEntry.SUPPLIER_HAS_BEEN_REMOVED)
             return false;
 
         // creating query on Supplier Id
-        String selection=SupplierEntry._ID+"=?";
-        String[] selectionArgs=new String[]{String.valueOf(supplierId)};
+        String selection = SupplierEntry._ID + "=?";
+        String[] selectionArgs = new String[]{String.valueOf(supplierId)};
 
         // running the query
-        Cursor queryResult=db.query(SupplierEntry.TABLE_NAME,null,selection,selectionArgs,null,null,null);
+        Cursor queryResult = db.query(SupplierEntry.TABLE_NAME, null, selection, selectionArgs, null, null, null);
 
         // if Supplier with given Id exists then the queryResult has a result which returns true.
-        if(queryResult.moveToFirst()){
+        if (queryResult.moveToFirst()) {
             queryResult.close();
             return true;
         } else {
