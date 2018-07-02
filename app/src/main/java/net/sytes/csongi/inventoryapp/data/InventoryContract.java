@@ -1,8 +1,6 @@
 package net.sytes.csongi.inventoryapp.data;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -77,6 +75,7 @@ public final class InventoryContract {
          * type: long
          */
         public static final long SUPPLIER_HAS_BEEN_REMOVED=-2L;
+        private static final long SUPPLIER_NOT_SELECTED = -1L;
     }
 
     // the supplier table contract

@@ -7,13 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import net.sytes.csongi.inventoryapp.data.InventoryContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +32,10 @@ public class MainActivity extends AppCompatActivity {
         unbinder = ButterKnife.bind(this);
 
         mListView.setEmptyView(mListIsEmptyImage);
-        mFabNewProduct.setOnClickListener(v -> finish());
+        mFabNewProduct.setOnClickListener(v -> {
+            Intent addNewProductIntent = new Intent(getApplicationContext(), ProductEditActivity.class);
+            startActivity(addNewProductIntent);
+        });
     }
 
     @Override
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         switch (menuItemId) {
             case R.id.edit_suppliers:
                 Log.d(LOG_TAG, "suppliers menu item selected");
-                Intent intent=new Intent(getApplicationContext(),SuppliersListActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SuppliersListActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -60,4 +58,6 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 }

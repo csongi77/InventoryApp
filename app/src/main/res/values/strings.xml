@@ -34,6 +34,9 @@
 
     <!-- main menu items -->
     <string name="edit_suppliers_main_menu_item">Suppliers...</string>
+    <string name="delete_confirmation_message">Are you sure you want to delete this item?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 
 </resources>

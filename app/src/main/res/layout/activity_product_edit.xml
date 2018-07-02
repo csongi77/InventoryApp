@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Product Name:" />
+
+    <EditText
+        android:id="@+id/product_name_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Product Name" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Price:" />
+
+    <EditText
+        android:id="@+id/product_price_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter initial price"
+        android:inputType="number" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quantity" />
+
+    <EditText
+        android:id="@+id/product_quantity_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Initial Quantity"
+        android:inputType="number" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select supplier of this product" />
+
+    <Spinner
+        android:id="@+id/supplier_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:spinnerMode="dropdown" />
+
+</LinearLayout>

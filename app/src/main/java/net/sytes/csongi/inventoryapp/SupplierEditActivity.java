@@ -1,14 +1,15 @@
 package net.sytes.csongi.inventoryapp;
 
-import android.app.AlertDialog;
+
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -73,7 +74,9 @@ public class SupplierEditActivity extends AppCompatActivity {
             case R.id.edit_delete:
                 Log.w(LOG_TAG, "delete has clicked");
                 deleteSupplier();
+                return true;
             case android.R.id.home:
+                // todo check whether fields has been started to filled
                 NavUtils.navigateUpFromSameTask(this);
         }
         return super.onOptionsItemSelected(item);
@@ -104,9 +107,21 @@ public class SupplierEditActivity extends AppCompatActivity {
 
     // method for deleting current entity
     private void deleteSupplier() {
-        // todo create alert dialog button
-        getContentResolver().delete(mUri, null, null);
-        finish();
+        // ask user for confirmation
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setMessage(R.string.delete_confirmation_message)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        getContentResolver().delete(mUri, null, null);
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .setCancelable(true)
+                .show();
+
+
     }
 
     /**
