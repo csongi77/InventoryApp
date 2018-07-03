@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -52,6 +53,9 @@ public class ProductEditActivity extends AppCompatActivity {
     @BindView(R.id.supplier_spinner)
     Spinner mSupplierSpinner;
 
+    @BindView(R.id.supplier_phone_txt)
+    TextView mSupplierPhoneTxt;
+
     private Unbinder unbinder;
     private CursorAdapter mSpinnerAdapter;
     private Uri mUri;
@@ -59,7 +63,7 @@ public class ProductEditActivity extends AppCompatActivity {
     private long mSupplierId;
     private int mProductPrice, mProductQuantity;
     private View.OnFocusChangeListener mFocusChangeListener;
-    private boolean mStartedToEdit=false;
+    private boolean mStartedToEdit = false;
 
 
     @Override
@@ -67,6 +71,29 @@ public class ProductEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_edit);
         unbinder = ButterKnife.bind(this);
+
+        // set up product Loader callback
+        LoaderManager.LoaderCallbacks<Cursor> mProductLoaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                return new CursorLoader(getApplicationContext(), mUri, null, null, null, null);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+                // check there is a result
+                if(data.moveToNext()){
+                    mProductNameEdit.setText(data.getString(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_PRODUCT_NAME)));
+                    mProductPriceEdit.setText(data.getString(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_PRICE)));
+                }
+                // set spinner to current user
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> loader) {
+
+            }
+        };
 
         // set up supplier Loader callback
         LoaderManager.LoaderCallbacks<Cursor> supplierLoaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -91,16 +118,9 @@ public class ProductEditActivity extends AppCompatActivity {
                 MergeCursor mergeCursor = new MergeCursor(cursors);
 
                 mSpinnerAdapter.swapCursor(mergeCursor);
-
-                /*
-                 * if mUri is specified we are in Edit mode so there must be a previously
-                 * selected Supplier.
-                 */
-                if (mUri == null) {
-                    mSupplierSpinner.setSelection(0);
-                } else {
-                    // we are in edit mode, and set spinner to
-                    mSupplierSpinner.setSelection(getPositionFromId(mUri, data));
+                mSupplierSpinner.setSelection(0);
+                if (mUri != null) {
+                    getLoaderManager().initLoader(PRODUCT_LOADER,null,mProductLoaderCallback);
                 }
             }
 
@@ -109,6 +129,10 @@ public class ProductEditActivity extends AppCompatActivity {
                 mSpinnerAdapter.swapCursor(null);
             }
         };
+        
+        // preloading Suppliers
+        getLoaderManager().initLoader(SUPPLIER_LOADER, null, supplierLoaderCallback);
+
         /*
         receiving Intent. If mUri is null, then the purpose of this activity is to create a new
         Product entity. Otherwise (if mUri is not null) we have to edit an existing Product
@@ -117,8 +141,6 @@ public class ProductEditActivity extends AppCompatActivity {
         mUri = recievedIntent.getData();
         if (mUri != null) {
             setTitle("Edit Product");
-            // TODO: 2018.07.02. load product
-            loadProduct();
         } else {
             setTitle("Add new Product");
             invalidateOptionsMenu();
@@ -150,21 +172,8 @@ public class ProductEditActivity extends AppCompatActivity {
         mProductNameEdit.setOnFocusChangeListener(mFocusChangeListener);
         mSupplierSpinner.setOnFocusChangeListener(mFocusChangeListener);
 
-
-        // TODO: 2018.07.02. set up loader callback for product for edit
-
-        // preloading Suppliers
-        getLoaderManager().initLoader(SUPPLIER_LOADER, null, supplierLoaderCallback);
-
     }
 
-    /**
-     * this helper method queries the product which we want to edit, and fills out the
-     * empty form (product name, supplier etc.)
-     */
-    private void loadProduct() {
-
-    }
 
     // creating options menu
     @Override
@@ -177,13 +186,15 @@ public class ProductEditActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem deleteItem = menu.findItem(R.id.edit_delete);
+        if(mUri==null)
         deleteItem.setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }
 
     /**
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
+     * @return boolean Return false to allow normal menu processing        android:layout_height="48dp"
+     * to
      * proceed, true to consume it here.
      * @see #onCreateOptionsMenu
      */
@@ -243,12 +254,20 @@ public class ProductEditActivity extends AppCompatActivity {
             productToSaveValues.put(ProductEntry.COLUMN_NAME_PRICE, mProductPrice);
             productToSaveValues.put(ProductEntry.COLUMN_NAME_QUANTITY, mProductQuantity);
             productToSaveValues.put(ProductEntry.COLUMN_NAME_SUPPLIER_ID, mSupplierId);
-
-            Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, productToSaveValues);
-            if (newUri != null) {
-                Toast.makeText(this, "Product saved with ID: " + ContentUris.parseId(newUri), Toast.LENGTH_SHORT).show();
+            if (mUri == null) {
+                Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, productToSaveValues);
+                if (newUri != null) {
+                    Toast.makeText(this, "Product saved with ID: " + ContentUris.parseId(newUri), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Saving product is unsuccessful", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(this, "Saving product is unsuccessful", Toast.LENGTH_SHORT).show();
+                int affectedRows=getContentResolver().update(mUri,productToSaveValues,null,null);
+                if(affectedRows==1){
+                    Toast.makeText(this, "Product with id:"+ContentUris.parseId(mUri)+" has been successfully updated!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Update product caused error", Toast.LENGTH_SHORT).show();
+                }
             }
             finish();
         } else {

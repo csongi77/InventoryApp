@@ -13,7 +13,8 @@
         android:id="@+id/product_name_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Product Name" />
+        android:hint="Enter Product Name"
+        style="@style/Base.TextAppearance.AppCompat.Headline"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -25,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter initial price"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
         android:inputType="number" />
 
     <TextView
@@ -36,6 +38,7 @@
         android:id="@+id/product_quantity_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
         android:hint="Initial Quantity"
         android:inputType="number" />
 
@@ -48,6 +51,17 @@
         android:id="@+id/supplier_spinner"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"
+        style="@style/Base.TextAppearance.AppCompat.Headline"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Supplier Phone:"/>
+    <TextView
+        android:id="@+id/supplier_phone_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
+        android:text="lkgjds"/>
 
 </LinearLayout>
