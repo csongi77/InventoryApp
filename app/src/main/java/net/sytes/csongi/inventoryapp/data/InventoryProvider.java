@@ -20,7 +20,7 @@ import static net.sytes.csongi.inventoryapp.data.InventoryContract.*;
 
 public class InventoryProvider extends ContentProvider {
 
-    private static final String TAG=InventoryProvider.class.getSimpleName();
+    private static final String TAG = InventoryProvider.class.getSimpleName();
 
     private static final int PRODUCT_ID = 100;
     private static final int PRODUCTS = 101;
@@ -117,7 +117,6 @@ public class InventoryProvider extends ContentProvider {
                 }
                 return affectedRows;
             case SUPPLIER_ID:
-                // todo make helper method for deleting one or more suppliers: the method must set supplier Id@Product supplierId column to -2L
                 selection = SupplierEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 affectedRows = deleteSupplier(selection, selectionArgs, db);
@@ -174,7 +173,7 @@ public class InventoryProvider extends ContentProvider {
             ContentValues values = new ContentValues();
             values.put(ProductEntry.COLUMN_NAME_SUPPLIER_ID, ProductEntry.SUPPLIER_HAS_BEEN_REMOVED);
             db.update(ProductEntry.TABLE_NAME, values, productSelection, productSelectionArgs);
-            Log.d(TAG, "supplierCursor moved to ID: "+supplierId);
+            Log.d(TAG, "supplierCursor moved to ID: " + supplierId);
         }
         affectedRows = db.delete(SupplierEntry.TABLE_NAME, selection, selectionArgs);
         return affectedRows;
@@ -280,8 +279,55 @@ public class InventoryProvider extends ContentProvider {
      * @return number of affected rows
      */
     private int updateProduct(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        // todo check supplier id at sanity check
-        return 0;
+        int rowsAffected = 0;
+
+        // sanity check
+        if (values.containsKey(ProductEntry.COLUMN_NAME_PRODUCT_NAME)) {
+            String productName = values.getAsString(ProductEntry.COLUMN_NAME_PRODUCT_NAME);
+            if (TextUtils.isEmpty(productName))
+                throw new IllegalArgumentException("Product name cannot be empty");
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_NAME_QUANTITY)) {
+            Integer productQuantity = values.getAsInteger(ProductEntry.COLUMN_NAME_QUANTITY);
+            if (productQuantity == null) {
+                throw new IllegalArgumentException("Product quantity must be an integer");
+            }
+            if (productQuantity < 0)
+                throw new IllegalArgumentException("Product quantity must be positive number or 0");
+        }
+
+        if (values.containsKey(ProductEntry.COLUMN_NAME_PRICE)) {
+            Integer productPrice = values.getAsInteger(ProductEntry.COLUMN_NAME_PRICE);
+            if (productPrice == null) {
+                throw new IllegalArgumentException("Product price must be an integer");
+            }
+            if (productPrice < 1)
+                throw new IllegalArgumentException("Product price must be positive number");
+        }
+        // check supplier id
+
+        if (values.containsKey(ProductEntry.COLUMN_NAME_SUPPLIER_ID)) {
+            Long supplierId = values.getAsLong(ProductEntry.COLUMN_NAME_SUPPLIER_ID);
+            if (supplierId == null) {
+                throw new IllegalArgumentException("Supplier must be set");
+            }
+            if (supplierId < 1) {
+                throw new IllegalArgumentException("Select valid supplier!");
+            }
+            if (!isSupplierIdValid(supplierId))
+                throw new IllegalArgumentException("Supplier id is invalid!");
+        }
+
+        if (values.size() == 0) return 0;
+
+        // update product
+        SQLiteDatabase db = mInventoryDbHelper.getWritableDatabase();
+        rowsAffected = db.update(ProductEntry.TABLE_NAME, values, selection, selectionArgs);
+        if(rowsAffected>0){
+            getContext().getContentResolver().notifyChange(uri,null);
+        }
+        return rowsAffected;
     }
 
     /**
@@ -351,11 +397,13 @@ public class InventoryProvider extends ContentProvider {
      * @return true if Supplier exists with given supplerId. False otherwise
      */
     private boolean isSupplierIdValid(Long supplierId) {
+        Log.d(TAG, "isSupplierIdValid: has been called");
         SQLiteDatabase db = mInventoryDbHelper.getReadableDatabase();
 
-        if (supplierId == ProductEntry.SUPPLIER_HAS_BEEN_REMOVED)
+        if (supplierId == ProductEntry.SUPPLIER_HAS_BEEN_REMOVED) {
+            Log.d(TAG, "isSupplierIdValid: supplier has been removed");
             return false;
-
+        }
         // creating query on Supplier Id
         String selection = SupplierEntry._ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(supplierId)};
@@ -366,9 +414,11 @@ public class InventoryProvider extends ContentProvider {
         // if Supplier with given Id exists then the queryResult has a result which returns true.
         if (queryResult.moveToFirst()) {
             queryResult.close();
+            Log.d(TAG, "isSupplierIdValid: supplier with id: " + supplierId + " exists");
             return true;
         } else {
             queryResult.close();
+            Log.d(TAG, "isSupplierIdValid: supplier with id: " + supplierId + " doesn't exists");
             return false;
         }
     }

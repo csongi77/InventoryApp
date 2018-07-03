@@ -33,5 +33,6 @@ public class ProductCursorAdapter extends CursorAdapter {
         ((TextView)view.findViewById(R.id.product_name_txt)).setText(productName);
         ((TextView)view.findViewById(R.id.price_txt)).setText(String.valueOf(productPrice));
         ((TextView)view.findViewById(R.id.quantity_txt)).setText(String.valueOf(productQuantity));
+
     }
 }
