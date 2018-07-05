@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import net.sytes.csongi.inventoryapp.data.InventoryContract;
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.product_list_view)
     ListView mListView;
     @BindView(R.id.list_is_empty)
-    ImageView mListIsEmptyImage;
+    View mListIsEmptyImage;
     @BindView(R.id.fab_new_product)
     FloatingActionButton mFabNewProduct;
     private CursorAdapter mCursorAdapter;

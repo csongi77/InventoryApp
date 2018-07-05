@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -64,6 +65,7 @@ public class ProductEditActivity extends AppCompatActivity {
     private int mProductPrice, mProductQuantity;
     private View.OnFocusChangeListener mFocusChangeListener;
     private boolean mStartedToEdit = false;
+    private Cursor mSpinnerCursor;
 
 
     @Override
@@ -82,11 +84,14 @@ public class ProductEditActivity extends AppCompatActivity {
             @Override
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
                 // check there is a result
-                if(data.moveToNext()){
+                if (data.moveToNext()) {
                     mProductNameEdit.setText(data.getString(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_PRODUCT_NAME)));
                     mProductPriceEdit.setText(data.getString(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_PRICE)));
+                    mProductQuantityEdit.setText(data.getString(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_QUANTITY)));
                 }
-                // set spinner to current user
+                mSupplierId = data.getLong(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_SUPPLIER_ID));
+                mSupplierSpinner.setSelection(getPositionFromId(mSupplierId));
+                mSupplierPhoneTxt.setText(mSpinnerCursor.getString(mSpinnerCursor.getColumnIndexOrThrow(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE)));
             }
 
             @Override
@@ -105,6 +110,12 @@ public class ProductEditActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+                // if there are no existing suppliers ask user to create it and go back
+                if (!data.moveToNext()) {
+                    Toast.makeText(ProductEditActivity.this, "There are no existing Suppliers. Add one before product insertation", Toast.LENGTH_LONG).show();
+                    NavUtils.navigateUpFromSameTask(ProductEditActivity.this);
+                }
+
                 // we have to add some rows to result in order to
                 String[] columnNames = data.getColumnNames();
                 MatrixCursor additionalInfoCursor = new MatrixCursor(columnNames);
@@ -115,21 +126,24 @@ public class ProductEditActivity extends AppCompatActivity {
                         .add(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE, "N/A");
 
                 Cursor[] cursors = {additionalInfoCursor, data};
-                MergeCursor mergeCursor = new MergeCursor(cursors);
+                mSpinnerCursor = new MergeCursor(cursors);
 
-                mSpinnerAdapter.swapCursor(mergeCursor);
+                mSpinnerAdapter.swapCursor(mSpinnerCursor);
                 mSupplierSpinner.setSelection(0);
+                mSpinnerCursor.moveToFirst();
+                mSupplierPhoneTxt.setText(mSpinnerCursor.getString(mSpinnerCursor.getColumnIndexOrThrow(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE)));
                 if (mUri != null) {
-                    getLoaderManager().initLoader(PRODUCT_LOADER,null,mProductLoaderCallback);
+                    getLoaderManager().initLoader(PRODUCT_LOADER, null, mProductLoaderCallback);
                 }
             }
 
             @Override
             public void onLoaderReset(Loader<Cursor> loader) {
                 mSpinnerAdapter.swapCursor(null);
+                mSpinnerCursor.close();
             }
         };
-        
+
         // preloading Suppliers
         getLoaderManager().initLoader(SUPPLIER_LOADER, null, supplierLoaderCallback);
 
@@ -186,8 +200,8 @@ public class ProductEditActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem deleteItem = menu.findItem(R.id.edit_delete);
-        if(mUri==null)
-        deleteItem.setVisible(false);
+        if (mUri == null)
+            deleteItem.setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -262,9 +276,9 @@ public class ProductEditActivity extends AppCompatActivity {
                     Toast.makeText(this, "Saving product is unsuccessful", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                int affectedRows=getContentResolver().update(mUri,productToSaveValues,null,null);
-                if(affectedRows==1){
-                    Toast.makeText(this, "Product with id:"+ContentUris.parseId(mUri)+" has been successfully updated!", Toast.LENGTH_SHORT).show();
+                int affectedRows = getContentResolver().update(mUri, productToSaveValues, null, null);
+                if (affectedRows == 1) {
+                    Toast.makeText(this, "Product with id:" + ContentUris.parseId(mUri) + " has been successfully updated!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Update product caused error", Toast.LENGTH_SHORT).show();
                 }
@@ -289,6 +303,8 @@ public class ProductEditActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mSupplierId = id;
+                mSpinnerCursor.moveToPosition(position);
+                mSupplierPhoneTxt.setText(mSpinnerCursor.getString(mSpinnerCursor.getColumnIndexOrThrow(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE)));
                 Log.d(TAG, "onItemSelected: ID=" + mSupplierId);
             }
 
@@ -298,23 +314,18 @@ public class ProductEditActivity extends AppCompatActivity {
         });
     }
 
-    private int getPositionFromId(Uri uriOfProduct, Cursor cursorOfSuppliers) {
-        long supplierId = ContentUris.parseId(uriOfProduct);
-        // // TODO: 2018.07.01. query for product and set up views
+    private int getPositionFromId(long supplierId) {
+        // the first element is always "select" cursor item
+        mSpinnerCursor.moveToFirst();
+        int position = 0;
 
-        // check id before cast it
-        if (supplierId < Integer.MIN_VALUE || supplierId > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException
-                    (supplierId + " cannot be cast to int without changing its value.");
-        }
-
-        // move through data. when
-       /* while (cursorOfSuppliers.moveToNext()) {
-            if (supplierId == cursorOfSuppliers.getLong(cursorOfSuppliers.getColumnIndexOrThrow(SupplierEntry._ID)))
-                return position;
+        // let's search the supplier's position in Cursor which has the same id as in Product's supplierId
+        while (mSpinnerCursor.moveToNext()) {
             position++;
-        }*/
-        return -2;
+            if (mSpinnerCursor.getLong(mSpinnerCursor.getColumnIndexOrThrow(SupplierEntry._ID)) == supplierId)
+                return position;
+        }
+        return 0;
 
     }
 }

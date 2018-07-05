@@ -12,25 +12,44 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".SuppliersListActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/activity_label_product_list"></activity>
+            android:label="@string/activity_label_product_list"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
 
         <provider
             android:name=".data.InventoryProvider"
             android:authorities="net.sytes.csongi.inventoryapp" />
 
-        <activity android:name=".SupplierEditActivity"
-            android:parentActivityName=".SuppliersListActivity"
-            />
+        <activity
+            android:name=".SupplierEditActivity"
+            android:parentActivityName=".SuppliersListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SuppliersListActivity" />
+        </activity>
         <activity
             android:name=".ProductEditActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ProductDetailsAcitvity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ProductDetailsAcitvity" />
+        </activity>
+        <activity
+            android:name=".ProductDetailsAcitvity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/product_details_label">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>

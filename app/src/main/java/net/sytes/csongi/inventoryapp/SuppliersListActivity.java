@@ -49,7 +49,7 @@ public class SuppliersListActivity extends AppCompatActivity implements LoaderMa
         });
 
         ListView mSupplierListView=findViewById(R.id.product_list_view);
-        ImageView mEmptyView=findViewById(R.id.list_is_empty);
+        View mEmptyView=findViewById(R.id.list_is_empty);
         mSupplierListView.setEmptyView(mEmptyView);
 
         mAdapter = new SupplierCursorAdapter(this,null);

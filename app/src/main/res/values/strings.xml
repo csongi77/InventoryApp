@@ -37,6 +37,18 @@
     <string name="delete_confirmation_message">Are you sure you want to delete this item?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="product_details_label">Product Details</string>
+    <string name="product_details_edit_product">Edit product</string>
+    <string name="product_details_delete_product">Delete product</string>
+    <string name="product_details_price_text">Price:</string>
+    <string name="product_details_price">€</string>
+    <string name="product_details_quantity_text">Quantity:</string>
+    <string name="product_details_quantity">pcs</string>
+    <string name="product_details_supplier_text">Supplier:</string>
+    <string name="product_details_supplier_name_sample">Supplier sample</string>
+    <string name="product_details_supplier_phone_text">Supplier phone:</string>
+    <string name="product_details_supplier_phone">555-1234-567</string>
+    <string name="product_details_product_name">Product name:</string>
 
 
 </resources>

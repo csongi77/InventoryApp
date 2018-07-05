@@ -15,7 +15,7 @@ import static net.sytes.csongi.inventoryapp.data.InventoryContract.*;
 class InventoryDbHelper extends SQLiteOpenHelper {
 
     // declaring constants
-    private static final int DATABASE_VERSION=2;
+    private static final int DATABASE_VERSION=1;
     private static final String DATABASE_NAME="InventoryApp.db";
     private static final String LOG_TAG=InventoryDbHelper.class.getSimpleName()+" --->";
 

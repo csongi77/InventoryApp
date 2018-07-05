@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/list_container_root">
-<ImageView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_container_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/list_is_empty"
-    android:src="@drawable/ic_launcher_background"/>
-<ListView
-    android:id="@+id/product_list_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"></ListView>
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/list_is_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/list_is_empty_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_folder_open" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_is_empty_text"
+            android:layout_alignParentBottom="true"
+            android:textSize="36dp"
+            android:textStyle="bold"
+            android:text="The list is empty"
+            android:textColor="@android:color/black"
+            android:translationY="-64dp"
+            android:translationX="16dp"
+            />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/product_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 </LinearLayout>
