@@ -1,9 +1,11 @@
 package net.sytes.csongi.inventoryapp;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -157,7 +159,6 @@ public class ProductEditActivity extends AppCompatActivity {
             setTitle("Edit Product");
         } else {
             setTitle("Add new Product");
-            invalidateOptionsMenu();
         }
 
         // set up spinner
@@ -185,7 +186,6 @@ public class ProductEditActivity extends AppCompatActivity {
         mProductQuantityEdit.setOnFocusChangeListener(mFocusChangeListener);
         mProductNameEdit.setOnFocusChangeListener(mFocusChangeListener);
         mSupplierSpinner.setOnFocusChangeListener(mFocusChangeListener);
-
     }
 
 
@@ -196,14 +196,6 @@ public class ProductEditActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    // preparing options menu in case we add new product (delete item must be hide).
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem deleteItem = menu.findItem(R.id.edit_delete);
-        if (mUri == null)
-            deleteItem.setVisible(false);
-        return super.onPrepareOptionsMenu(menu);
-    }
 
     /**
      * @param item The menu item that was selected.
@@ -218,9 +210,6 @@ public class ProductEditActivity extends AppCompatActivity {
         switch (menuItem) {
             case R.id.edit_save:
                 checkAndSaveProduct();
-                return true;
-            case R.id.edit_delete:
-                warnAndDeleteProduct();
                 return true;
             case android.R.id.home:
                 onBackPressed();
@@ -241,8 +230,8 @@ public class ProductEditActivity extends AppCompatActivity {
             Toast.makeText(this, "back pressed, but user started to edit", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "back pressed, mStartedToEdit=" + mStartedToEdit, Toast.LENGTH_SHORT).show();
-            NavUtils.navigateUpFromSameTask(this);
-            //super.onBackPressed();
+            //NavUtils.navigateUpFromSameTask(this);
+            super.onBackPressed();
         }
     }
 
@@ -289,9 +278,7 @@ public class ProductEditActivity extends AppCompatActivity {
         }
     }
 
-    private void warnAndDeleteProduct() {
-        Toast.makeText(this, "warnAndDeleteProduct", Toast.LENGTH_SHORT).show();
-    }
+
 
     /**
      * helper method for setting up spinner for selecting supplier

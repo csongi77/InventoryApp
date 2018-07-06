@@ -59,7 +59,7 @@ public class SupplierEditActivity extends AppCompatActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.edit_menu, menu);
+        getMenuInflater().inflate(R.menu.edit_supplier_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -67,13 +67,16 @@ public class SupplierEditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int selectedItem = item.getItemId();
         switch (selectedItem) {
-            case R.id.edit_save:
-                Log.w(LOG_TAG, "save has clicked");
+            case R.id.edit_supplier_save:
+                Log.i(LOG_TAG, "save has clicked");
                 saveSupplier();
                 return true;
-            case R.id.edit_delete:
-                Log.w(LOG_TAG, "delete has clicked");
+            case R.id.edit_supplier_delete:
+                Log.i(LOG_TAG, "delete has clicked");
                 deleteSupplier();
+                return true;
+            case R.id.edit_supplier_delete_all_products:
+                deleteSuppliersProducts();
                 return true;
             case android.R.id.home:
                 // todo check whether fields has been started to filled
@@ -86,13 +89,16 @@ public class SupplierEditActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         if (mUri == null) {
-            MenuItem item = menu.findItem(R.id.edit_delete);
-            item.setVisible(false);
+            MenuItem deleteItem = menu.findItem(R.id.edit_supplier_delete);
+            deleteItem.setVisible(false);
+            MenuItem deleteProductsItem=menu.findItem(R.id.edit_supplier_delete_all_products);
+            deleteProductsItem.setVisible(false);
         }
         return true;
     }
 
     // helper method for fill in views for edit
+
     private void setupViews() {
 
         // first me make a query with the specified Uri
@@ -120,7 +126,10 @@ public class SupplierEditActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.no, null)
                 .setCancelable(true)
                 .show();
+    }
 
+    // helper method for deleting supplier's all products
+    private void deleteSuppliersProducts() {
 
     }
 

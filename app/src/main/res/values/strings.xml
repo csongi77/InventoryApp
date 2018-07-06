@@ -52,6 +52,12 @@
     <string name="product_details_supplier_phone">555-1234-567</string>
     <string name="product_details_product_name">Product name:</string>
     <string name="product_details_no_supplier_set_up_error">No supplier has been set up. We cannot load supplier data!</string>
+    <string name="product_details_uri_didnt_set_up_error">Uri must set in order to run this activity</string>
+    <string name="product_details_confirm_delete_title">Confirm delete</string>
+    <string name="product_details_delete_warning_message">All product data will be deleted! Are you sure?</string>
+    <string name="product_details_positive_button">Delete</string>
+    <string name="product_details_negative_button">Cancel</string>
+    <string name="product_details_delete_unsuccessful_message">Deleting product was unsuccessful!</string>
 
 
 </resources>
