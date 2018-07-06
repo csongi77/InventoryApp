@@ -70,7 +70,10 @@
                 android:layout_gravity="center"
                 android:id="@+id/product_details_increase_by_one"
                 android:src="@drawable/ic_exposure_plus_1"
-                android:background="@drawable/increase_background"/>
+                android:background="@drawable/increase_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"/>
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
@@ -78,7 +81,10 @@
                 android:layout_marginRight="16dp"
                 android:id="@+id/product_details_decrease_by_one"
                 android:src="@drawable/ic_exposure_neg_1"
-                android:background="@drawable/decrease_background"/>
+                android:background="@drawable/decrease_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"/>
         </LinearLayout>
         <!-- supplier name -->
         <TextView
@@ -99,12 +105,16 @@
             android:padding="6dp"
             tools:text="@string/product_details_supplier_name_sample" />
             <ImageView
+                android:id="@+id/product_details_call_supplier"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:src="@drawable/ic_call"
                 android:layout_marginRight="16dp"
                 android:tint="@android:color/holo_green_dark"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:focusable="false"
+                android:foreground="?attr/selectableItemBackground"/>
         </LinearLayout>
         <!-- supplier phone -->
         <TextView

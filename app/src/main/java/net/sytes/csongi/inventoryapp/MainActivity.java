@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Uri uriToQuery= ContentUris.withAppendedId(InventoryContract.ProductEntry.CONTENT_URI,id);
-                Intent editProduct=new Intent(MainActivity.this,ProductEditActivity.class);
+                Intent editProduct=new Intent(MainActivity.this,ProductDetailsAcitvity.class);
                 editProduct.setDataAndType(uriToQuery, InventoryContract.ProductEntry.CONTENT_ITEM_TYPE);
                 startActivity(editProduct);
             }
