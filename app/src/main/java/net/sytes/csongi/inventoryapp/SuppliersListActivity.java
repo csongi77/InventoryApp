@@ -47,23 +47,25 @@ public class SuppliersListActivity extends AppCompatActivity implements LoaderMa
         unbinder = ButterKnife.bind(this);
         setTitle(getString(R.string.suppliers_list_title));
 
+        // assigning function to FAB
         mNewSupplierButton.setOnClickListener(v ->
                 openEditSupplierWindow(SupplierEntry.CONTENT_URI)
         );
 
+        // set up listView
         mSupplierListView = findViewById(R.id.product_list_view);
         mEmptyView = findViewById(R.id.list_is_empty);
         mSupplierListView.setEmptyView(mEmptyView);
 
+        // set up Adapter for listView
         mAdapter = new SupplierCursorAdapter(this, null);
         mSupplierListView.setAdapter(mAdapter);
 
+        // loading data
         getLoaderManager().initLoader(SUPPLIER_LOADER, null, this);
-
-
     }
 
-
+    // overriding Loader callbacks
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = new String[]{

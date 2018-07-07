@@ -199,6 +199,7 @@ public class ProductEditActivity extends AppCompatActivity {
                         break;
                     case R.id.product_name_edit:
                         if (!isProductNameValid(mProductNameEdit)) {
+                            mProductNameEdit.setText(null);
                             mProductNameEdit.setHint(R.string.product_edit_name_cannot_be_empty);
                             mProductNameEdit.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                         }
@@ -218,11 +219,12 @@ public class ProductEditActivity extends AppCompatActivity {
      * helper method for validating product name
      *
      * @param editTextToValidate
-     * @return
+     * @return - true if field is not empty (contains at least one character which is not a
+     *          single space character)
      */
     private boolean isProductNameValid(EditText editTextToValidate) {
         String textToValidate = editTextToValidate.getText().toString().trim();
-        return !TextUtils.isEmpty(textToValidate);
+        return !TextUtils.isEmpty(textToValidate) && !(textToValidate.charAt(0) == (char) 32 && textToValidate.length() == 1);
     }
 
     /**
@@ -290,16 +292,11 @@ public class ProductEditActivity extends AppCompatActivity {
      * helper method to warn user that they started to fill out fields but pressed back button
      */
     private void warnUserAboutFinish() {
-        AlertDialog exitWithoutSave=new AlertDialog.Builder(this)
+        AlertDialog exitWithoutSave = new AlertDialog.Builder(this)
                 .setTitle(R.string.product_edit_alert_dialog_title)
                 .setMessage(R.string.product_edit_alert_dialog_message)
-                .setPositiveButton(R.string.product_edit_alert_dialog_positive_button, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ProductEditActivity.super.onBackPressed();
-                    }
-                })
-                .setNegativeButton(R.string.product_edit_alert_dialog_negative_button,null)
+                .setPositiveButton(R.string.product_edit_alert_dialog_positive_button, (dialog, which) -> ProductEditActivity.super.onBackPressed())
+                .setNegativeButton(R.string.product_edit_alert_dialog_negative_button, null)
                 .setCancelable(true)
                 .create();
         exitWithoutSave.show();
@@ -335,7 +332,7 @@ public class ProductEditActivity extends AppCompatActivity {
                 if (newUri != null) {
 
                     // feedback about successful save
-                    String message=String.format(getString(R.string.product_edit_saved_successfully),String.valueOf(ContentUris.parseId(newUri)));
+                    String message = String.format(getString(R.string.product_edit_saved_successfully), String.valueOf(ContentUris.parseId(newUri)));
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 } else {
 
@@ -349,7 +346,7 @@ public class ProductEditActivity extends AppCompatActivity {
                 if (affectedRows == 1) {
 
                     // feedback about successful update
-                    String message=String.format(getString(R.string.product_edit_updated_successfully),String.valueOf(ContentUris.parseId(mUri)));
+                    String message = String.format(getString(R.string.product_edit_updated_successfully), String.valueOf(ContentUris.parseId(mUri)));
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 } else {
 

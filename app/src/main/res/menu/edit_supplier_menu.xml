@@ -11,10 +11,5 @@
         android:icon="@drawable/ic_delete"
         android:title="@string/delete_menu_item"
         app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/edit_supplier_delete_all_products"
-        android:title="Delete all supplier's products"
-        android:icon="@drawable/ic_delete_forever"
-        app:showAsAction="ifRoom"/>
 
 </menu>

@@ -15,6 +15,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SuppliersListActivity"
             android:label="@string/activity_label_product_list"
@@ -24,10 +25,6 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <provider
-            android:name=".data.InventoryProvider"
-            android:authorities="net.sytes.csongi.inventoryapp" />
-
         <activity
             android:name=".SupplierEditActivity"
             android:parentActivityName=".SuppliersListActivity">
@@ -35,13 +32,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SuppliersListActivity" />
         </activity>
-        <activity
-            android:name=".ProductEditActivity"
-            android:parentActivityName=".ProductDetailsAcitvity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ProductDetailsAcitvity" />
-        </activity>
+
         <activity
             android:name=".ProductDetailsAcitvity"
             android:parentActivityName=".MainActivity"
@@ -50,6 +41,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
+        <activity
+            android:name=".ProductEditActivity"
+            android:parentActivityName=".ProductDetailsAcitvity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ProductDetailsAcitvity" />
+        </activity>
+
+        <provider
+            android:name=".data.InventoryProvider"
+            android:authorities="net.sytes.csongi.inventoryapp" />
     </application>
 
 </manifest>

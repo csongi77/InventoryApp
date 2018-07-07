@@ -152,7 +152,7 @@ public class InventoryProvider extends ContentProvider {
         // before deleting we have to check how many Suppliers will be affected
         String[] columns = new String[]{SupplierEntry._ID};
         Cursor suppliersCursor = db.query(SupplierEntry.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
-
+// TODO: 2018.07.07. change code to remove related products!
         /*
             Now we iterate through the result and do the following:
             0) move supplierCursor to first result
