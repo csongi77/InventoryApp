@@ -152,13 +152,12 @@ public class InventoryProvider extends ContentProvider {
         // before deleting we have to check how many Suppliers will be affected
         String[] columns = new String[]{SupplierEntry._ID};
         Cursor suppliersCursor = db.query(SupplierEntry.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
-// TODO: 2018.07.07. change code to remove related products!
         /*
             Now we iterate through the result and do the following:
             0) move supplierCursor to first result
             1) get the SupplierEntry._ID from supplierCursor
             2) find products with this ProductEntry.supplier_id
-            3) update products' supplierId to -2L ("Supplier_has_been_removed" state)
+            3) delete product
             4) repeat steps 1-3 until supplierCursor has next entry.
             5) close cursor
          */
@@ -169,11 +168,9 @@ public class InventoryProvider extends ContentProvider {
             long supplierId = suppliersCursor.getLong(suppliersCursor.getColumnIndexOrThrow(SupplierEntry._ID));
 
             String productSelection = ProductEntry.COLUMN_NAME_SUPPLIER_ID + "=?";
-            String[] productSelectionArgs = new String[]{String.valueOf(supplierId)};
-            ContentValues values = new ContentValues();
-            values.put(ProductEntry.COLUMN_NAME_SUPPLIER_ID, ProductEntry.SUPPLIER_HAS_BEEN_REMOVED);
-            db.update(ProductEntry.TABLE_NAME, values, productSelection, productSelectionArgs);
-            Log.d(TAG, "supplierCursor moved to ID: " + supplierId);
+            String[] productSelectionArgs = new String[]{String.valueOf(supplierId)};;
+            int affectedProducts=db.delete(ProductEntry.TABLE_NAME,productSelection,productSelectionArgs);
+            Log.i(TAG, "supplierCursor moved to ID:: deleted " + affectedProducts+" pcs of products");
         }
         affectedRows = db.delete(SupplierEntry.TABLE_NAME, selection, selectionArgs);
         return affectedRows;
