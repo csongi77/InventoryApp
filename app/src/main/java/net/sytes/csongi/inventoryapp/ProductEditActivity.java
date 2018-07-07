@@ -16,8 +16,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -59,7 +59,7 @@ public class ProductEditActivity extends AppCompatActivity {
     @BindView(R.id.supplier_phone_txt)
     TextView mSupplierPhoneTxt;
 
-    private Unbinder unbinder;
+    Unbinder unbinder;
     private CursorAdapter mSpinnerAdapter;
     private Uri mUri;
     private String mProductName;
@@ -85,8 +85,9 @@ public class ProductEditActivity extends AppCompatActivity {
 
             @Override
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-                // check there is a result
+                // check is there a result
                 if (data.moveToNext()) {
+                    // if yes, fill out the form with original data
                     mProductNameEdit.setText(data.getString(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_PRODUCT_NAME)));
                     mProductPriceEdit.setText(data.getString(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_PRICE)));
                     mProductQuantityEdit.setText(data.getString(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_QUANTITY)));
@@ -98,7 +99,7 @@ public class ProductEditActivity extends AppCompatActivity {
 
             @Override
             public void onLoaderReset(Loader<Cursor> loader) {
-
+                loader = null;
             }
         };
 
@@ -114,27 +115,31 @@ public class ProductEditActivity extends AppCompatActivity {
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
                 // if there are no existing suppliers ask user to create it and go back
                 if (!data.moveToNext()) {
-                    Toast.makeText(ProductEditActivity.this, "There are no existing Suppliers. Add one before product insertation", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProductEditActivity.this, R.string.product_edit_no_existing_suppliers, Toast.LENGTH_LONG).show();
                     NavUtils.navigateUpFromSameTask(ProductEditActivity.this);
                 }
 
-                // we have to add some rows to result in order to
+                // we have to add some rows to result in order to display "Select supplier" spinner option
                 String[] columnNames = data.getColumnNames();
                 MatrixCursor additionalInfoCursor = new MatrixCursor(columnNames);
 
                 // add Select supplier row:
                 additionalInfoCursor.newRow().add(SupplierEntry._ID, -1L)
-                        .add(SupplierEntry.COLUMN_NAME_SUPPLIER_NAME, "Select Supplier")
-                        .add(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE, "N/A");
+                        .add(SupplierEntry.COLUMN_NAME_SUPPLIER_NAME, getString(R.string.product_edit_select_supplier))
+                        .add(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE, getString(R.string.product_edit_not_available));
 
                 Cursor[] cursors = {additionalInfoCursor, data};
                 mSpinnerCursor = new MergeCursor(cursors);
 
+                // add cursor to spinnerAdapter and set the 1st option ("Select supplier")
                 mSpinnerAdapter.swapCursor(mSpinnerCursor);
                 mSupplierSpinner.setSelection(0);
+
+                // we move the cursor for the first option and set Phone text to "N/A".
                 mSpinnerCursor.moveToFirst();
                 mSupplierPhoneTxt.setText(mSpinnerCursor.getString(mSpinnerCursor.getColumnIndexOrThrow(SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE)));
                 if (mUri != null) {
+                    // if we are in edit mode we start to load the products
                     getLoaderManager().initLoader(PRODUCT_LOADER, null, mProductLoaderCallback);
                 }
             }
@@ -156,9 +161,11 @@ public class ProductEditActivity extends AppCompatActivity {
         Intent recievedIntent = getIntent();
         mUri = recievedIntent.getData();
         if (mUri != null) {
-            setTitle("Edit Product");
+            // we are in edit mode
+            setTitle(getString(R.string.product_edit_edit_product_title));
         } else {
-            setTitle("Add new Product");
+            // we are in new product mode
+            setTitle(getString(R.string.product_edit_add_new_product_title));
         }
 
         // set up spinner
@@ -167,16 +174,35 @@ public class ProductEditActivity extends AppCompatActivity {
         /* set up listener in order to check whether user started to edit any field.
             If at least 1 field has been changed then we set mStartedToEdit to true.
             If we delete all infos from all fields, this value will set back to false.
+            Also we can check which fields must filled with valid data
          */
-        mFocusChangeListener = new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (mProductNameEdit.getText().toString().trim().length() > 0 ||
-                            mProductQuantityEdit.getText().toString().trim().length() > 0 ||
-                            mProductPriceEdit.getText().toString().trim().length() > 0 ||
-                            mSupplierSpinner.getSelectedItemId() > 0) mStartedToEdit = true;
-                    else mStartedToEdit = false;
+        mFocusChangeListener = (v, hasFocus) -> {
+
+
+            if (!hasFocus) {
+                mStartedToEdit = true;
+                int whichView = v.getId();
+                switch (whichView) {
+                    case R.id.product_quantity_edit:
+                        if (!isProductNumberValid(mProductQuantityEdit)) {
+                            mProductQuantityEdit.setText(null);
+                            mProductQuantityEdit.setHint(R.string.product_edit_enter_valid_number);
+                            mProductQuantityEdit.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                        }
+                        break;
+                    case R.id.product_price_edit:
+                        if (!isProductNumberValid(mProductPriceEdit)) {
+                            mProductPriceEdit.setText(null);
+                            mProductPriceEdit.setHint(R.string.product_edit_enter_valid_number);
+                            mProductPriceEdit.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                        }
+                        break;
+                    case R.id.product_name_edit:
+                        if (!isProductNameValid(mProductNameEdit)) {
+                            mProductNameEdit.setHint(R.string.product_edit_name_cannot_be_empty);
+                            mProductNameEdit.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                        }
+                        break;
                 }
             }
         };
@@ -186,6 +212,34 @@ public class ProductEditActivity extends AppCompatActivity {
         mProductQuantityEdit.setOnFocusChangeListener(mFocusChangeListener);
         mProductNameEdit.setOnFocusChangeListener(mFocusChangeListener);
         mSupplierSpinner.setOnFocusChangeListener(mFocusChangeListener);
+    }
+
+    /**
+     * helper method for validating product name
+     *
+     * @param editTextToValidate
+     * @return
+     */
+    private boolean isProductNameValid(EditText editTextToValidate) {
+        String textToValidate = editTextToValidate.getText().toString().trim();
+        return !TextUtils.isEmpty(textToValidate);
+    }
+
+    /**
+     * helper method for checking product quantity
+     *
+     * @param editTextToValidate - the field we check
+     * @return true if in mProductQuantityEdit EditText:
+     * 1) is not empty AND
+     * 2) a positive integer number is entered
+     * false otherwise
+     */
+    private boolean isProductNumberValid(EditText editTextToValidate) {
+        String textString = editTextToValidate.getText().toString().trim();
+        if (TextUtils.isEmpty(textString) || !TextUtils.isDigitsOnly(textString)) return false;
+        int numberToCheck = Integer.parseInt(textString);
+        if (numberToCheck > 0) return true;
+        return false;
     }
 
 
@@ -226,17 +280,33 @@ public class ProductEditActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (mStartedToEdit) {
-//            warnUserAboutFinish();
-            Toast.makeText(this, "back pressed, but user started to edit", Toast.LENGTH_SHORT).show();
+            warnUserAboutFinish();
         } else {
-            Toast.makeText(this, "back pressed, mStartedToEdit=" + mStartedToEdit, Toast.LENGTH_SHORT).show();
-            //NavUtils.navigateUpFromSameTask(this);
             super.onBackPressed();
         }
     }
 
+    /**
+     * helper method to warn user that they started to fill out fields but pressed back button
+     */
+    private void warnUserAboutFinish() {
+        AlertDialog exitWithoutSave=new AlertDialog.Builder(this)
+                .setTitle(R.string.product_edit_alert_dialog_title)
+                .setMessage(R.string.product_edit_alert_dialog_message)
+                .setPositiveButton(R.string.product_edit_alert_dialog_positive_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ProductEditActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton(R.string.product_edit_alert_dialog_negative_button,null)
+                .setCancelable(true)
+                .create();
+        exitWithoutSave.show();
+    }
+
     private void checkAndSaveProduct() {
-        Toast.makeText(this, "CheckAndSaveProduct", Toast.LENGTH_SHORT).show();
+
         // retrieving values from spinner and edit texts
         mProductName = mProductNameEdit.getText().toString().trim();
         mProductPrice = 0;
@@ -250,35 +320,50 @@ public class ProductEditActivity extends AppCompatActivity {
             mProductQuantity = Integer.parseInt(quantityString);
         }
 
-        // sanity check. If all values are set then insert it
-        if (!TextUtils.isEmpty(mProductName) && mSupplierSpinner.getSelectedItemId() > 0) {
+
+        // sanity check. If all values are set then insert/update it
+        if (isProductNameValid(mProductNameEdit) && isProductNumberValid(mProductPriceEdit) && isProductNumberValid(mProductQuantityEdit) && mSupplierSpinner.getSelectedItemId() > 0) {
             ContentValues productToSaveValues = new ContentValues();
             productToSaveValues.put(ProductEntry.COLUMN_NAME_PRODUCT_NAME, mProductName);
             productToSaveValues.put(ProductEntry.COLUMN_NAME_PRICE, mProductPrice);
             productToSaveValues.put(ProductEntry.COLUMN_NAME_QUANTITY, mProductQuantity);
             productToSaveValues.put(ProductEntry.COLUMN_NAME_SUPPLIER_ID, mSupplierId);
+
+            // if mUri is null, then we insert a new product
             if (mUri == null) {
                 Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, productToSaveValues);
                 if (newUri != null) {
-                    Toast.makeText(this, "Product saved with ID: " + ContentUris.parseId(newUri), Toast.LENGTH_SHORT).show();
+
+                    // feedback about successful save
+                    String message=String.format(getString(R.string.product_edit_saved_successfully),String.valueOf(ContentUris.parseId(newUri)));
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "Saving product is unsuccessful", Toast.LENGTH_SHORT).show();
+
+                    // feedback about unsuccessful save
+                    Toast.makeText(this, R.string.product_edit_save_was_unsuccessful, Toast.LENGTH_SHORT).show();
                 }
+
+                // if mUri is not null, then update an existing product
             } else {
                 int affectedRows = getContentResolver().update(mUri, productToSaveValues, null, null);
                 if (affectedRows == 1) {
-                    Toast.makeText(this, "Product with id:" + ContentUris.parseId(mUri) + " has been successfully updated!", Toast.LENGTH_SHORT).show();
+
+                    // feedback about successful update
+                    String message=String.format(getString(R.string.product_edit_updated_successfully),String.valueOf(ContentUris.parseId(mUri)));
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "Update product caused error", Toast.LENGTH_SHORT).show();
+
+                    // feedback about unsuccesful update
+                    Toast.makeText(this, R.string.product_edit_update_unsuccessful, Toast.LENGTH_SHORT).show();
                 }
             }
             finish();
         } else {
-            Toast.makeText(this, "Product name and Supplier must be set!", Toast.LENGTH_SHORT).show();
+
+            // otherwise inform user that all fields must set before save
+            Toast.makeText(this, R.string.product_edit_all_fields_must_set, Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     /**
      * helper method for setting up spinner for selecting supplier
@@ -301,6 +386,12 @@ public class ProductEditActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * helper method for determining position of Supplier in spinner from supplierId
+     *
+     * @param supplierId - id of supplier
+     * @return the position of supplier in spinner
+     */
     private int getPositionFromId(long supplierId) {
         // the first element is always "select" cursor item
         mSpinnerCursor.moveToFirst();
@@ -313,6 +404,5 @@ public class ProductEditActivity extends AppCompatActivity {
                 return position;
         }
         return 0;
-
     }
 }

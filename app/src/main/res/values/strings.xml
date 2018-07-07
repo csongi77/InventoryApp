@@ -59,5 +59,23 @@
     <string name="product_details_negative_button">Cancel</string>
     <string name="product_details_delete_unsuccessful_message">Deleting product was unsuccessful!</string>
 
+    <!-- product edit activity strings -->
+    <string name="product_edit_no_existing_suppliers">There are no existing Suppliers. Add one before product insertation</string>
+    <string name="product_edit_select_supplier">Select Supplier</string>
+    <string name="product_edit_not_available">N/A</string>
+    <string name="product_edit_edit_product_title">Edit Product</string>
+    <string name="product_edit_add_new_product_title">Add new Product</string>
+    <string name="product_edit_enter_valid_number">Enter number greater than 0!</string>
+    <string name="product_edit_name_cannot_be_empty">Name cannot be empty!</string>
+    <string name="product_edit_all_fields_must_set">All fields must be set</string>
+    <string name="product_edit_save_was_unsuccessful">Saving product was unsuccessful</string>
+    <string name="product_edit_update_unsuccessful">Updating product was unsuccessful</string>
+    <string name="product_edit_alert_dialog_title">Exit without save?</string>
+    <string name="product_edit_alert_dialog_message">Pressing back button you\'ll exit without saving data? Are you sure?</string>
+    <string name="product_edit_alert_dialog_positive_button">Yes, quit!</string>
+    <string name="product_edit_alert_dialog_negative_button">No, stay here!</string>
+    <string name="product_edit_saved_successfully">Product saved successfully with id: <xliff:g name="save_success">%s</xliff:g></string>
+    <string name="product_edit_updated_successfully">Product with id: <xliff:g name="update_success">%s</xliff:g> updated successfully</string>
+
 
 </resources>
