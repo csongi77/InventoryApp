@@ -76,6 +76,7 @@
     <string name="product_edit_alert_dialog_negative_button">No, stay here!</string>
     <string name="product_edit_saved_successfully">Product saved successfully with id: <xliff:g name="save_success">%s</xliff:g></string>
     <string name="product_edit_updated_successfully">Product with id: <xliff:g name="update_success">%s</xliff:g> updated successfully</string>
+    <string name="suppliers_list_title">Suppliers...</string>
 
 
 </resources>

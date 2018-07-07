@@ -1,6 +1,7 @@
 package net.sytes.csongi.inventoryapp;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
@@ -26,13 +28,14 @@ import static net.sytes.csongi.inventoryapp.data.InventoryContract.*;
 public class SuppliersListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int SUPPLIER_LOADER = 42;
-
-
+    private static final String TAG = SuppliersListActivity.class.getSimpleName();
 
     @BindView(R.id.fab_new_product)
     FloatingActionButton mNewSupplierButton;
-//    @BindView(R.id.list_is_empty)
-//    ImageView mEmptyView;
+    @BindView(R.id.product_list_view)
+    ListView mSupplierListView;
+    @BindView(R.id.list_is_empty)
+    View mEmptyView;
 
     Unbinder unbinder;
     private CursorAdapter mAdapter;
@@ -42,31 +45,31 @@ public class SuppliersListActivity extends AppCompatActivity implements LoaderMa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
-        setTitle("Suppliers...");
+        setTitle(getString(R.string.suppliers_list_title));
 
-        mNewSupplierButton.setOnClickListener(v -> {
-            openEditSupplierWindow(SupplierEntry.CONTENT_URI);
-        });
+        mNewSupplierButton.setOnClickListener(v ->
+                openEditSupplierWindow(SupplierEntry.CONTENT_URI)
+        );
 
-        ListView mSupplierListView=findViewById(R.id.product_list_view);
-        View mEmptyView=findViewById(R.id.list_is_empty);
+        mSupplierListView = findViewById(R.id.product_list_view);
+        mEmptyView = findViewById(R.id.list_is_empty);
         mSupplierListView.setEmptyView(mEmptyView);
 
-        mAdapter = new SupplierCursorAdapter(this,null);
+        mAdapter = new SupplierCursorAdapter(this, null);
         mSupplierListView.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(SUPPLIER_LOADER, null, this);
 
-    }
 
+    }
 
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String [] projection = new String[]{
-          SupplierEntry._ID,
-          SupplierEntry.COLUMN_NAME_SUPPLIER_NAME,
-          SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE
+        String[] projection = new String[]{
+                SupplierEntry._ID,
+                SupplierEntry.COLUMN_NAME_SUPPLIER_NAME,
+                SupplierEntry.COLUMN_NAME_SUPPLIER_PHONE
         };
         return new CursorLoader(this, SupplierEntry.CONTENT_URI, projection, null, null, null);
     }
@@ -74,6 +77,15 @@ public class SuppliersListActivity extends AppCompatActivity implements LoaderMa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
+
+        // set up OnItemClickListener in order to open edit Supplier Activity
+        mSupplierListView.setOnItemClickListener((parent, view, position, id) -> {
+            Uri itemToOpen= ContentUris.withAppendedId(SupplierEntry.CONTENT_URI,id);
+            Intent openItem=new Intent(SuppliersListActivity.this,SupplierEditActivity.class);
+            openItem.setDataAndType(itemToOpen,SupplierEntry.CONTENT_ITEM_TYPE);
+            Log.i(TAG, "onItemClick: "+id);
+            startActivity(openItem);
+        });
     }
 
     @Override
@@ -90,7 +102,6 @@ public class SuppliersListActivity extends AppCompatActivity implements LoaderMa
      */
     private void openEditSupplierWindow(Uri mTargetUri) {
         Intent intent = new Intent(SuppliersListActivity.this, SupplierEditActivity.class);
-        //intent.setData(mTargetUri);
         startActivity(intent);
     }
 }

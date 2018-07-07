@@ -14,10 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="6dp"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground">
+        android:gravity="center">
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Large"
@@ -36,30 +33,6 @@
             android:textColor="#AEB6BD"/>
     </LinearLayout>
 
-    <!-- call supplier icon -->
-    <ImageView
-        android:id="@+id/call_supplier_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_call"
-        android:padding="12dp"
-        android:layout_gravity="center"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        />
 
-    <!-- edit supplier icon -->
-    <ImageView
-        android:id="@+id/edit_supplier_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_mode_edit"
-        android:padding="12dp"
-        android:layout_gravity="center"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        />
 
 </LinearLayout>
