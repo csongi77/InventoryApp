@@ -1,68 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusedByDefault="true"
-        android:text="Product Name:" />
+        android:orientation="vertical"
+        android:padding="6dp">
+    <!-- product name -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusedByDefault="true"
+            android:text="@string/product_edit_product_name" />
 
-    <EditText
-        android:id="@+id/product_name_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Product Name"
-        style="@style/Base.TextAppearance.AppCompat.Headline"/>
+        <EditText
+            android:id="@+id/product_name_edit"
+            style="@style/Base.TextAppearance.AppCompat.Headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/product_edit_enter_product_name" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Price:" />
+        <!-- product price -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_edit_price" />
 
-    <EditText
-        android:id="@+id/product_price_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter initial price"
-        style="@style/Base.TextAppearance.AppCompat.Headline"
-        android:inputType="number" />
+        <EditText
+            android:id="@+id/product_price_edit"
+            style="@style/Base.TextAppearance.AppCompat.Headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/product_edit_enter_initial_price"
+            android:inputType="number" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Quantity" />
+        <!-- product quantity -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_edit_quantity" />
 
-    <EditText
-        android:id="@+id/product_quantity_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Headline"
-        android:hint="Initial Quantity"
-        android:inputType="number" />
+        <EditText
+            android:id="@+id/product_quantity_edit"
+            style="@style/Base.TextAppearance.AppCompat.Headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/product_edit_initial_quantity"
+            android:inputType="number" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select supplier of this product" />
+        <!-- supplier info -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_edit_select_supplier_of_this_product" />
 
-    <Spinner
-        android:id="@+id/supplier_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:spinnerMode="dropdown"
-        style="@style/Base.TextAppearance.AppCompat.Headline"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Supplier Phone:"/>
-    <TextView
-        android:id="@+id/supplier_phone_txt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Headline"
-        android:text="lkgjds"/>
+        <Spinner
+            android:id="@+id/supplier_spinner"
+            style="@style/Base.TextAppearance.AppCompat.Headline"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:spinnerMode="dropdown" />
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_edit_supplier_phone" />
+
+        <TextView
+            android:id="@+id/supplier_phone_txt"
+            style="@style/Base.TextAppearance.AppCompat.Headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="lorem ipsum" />
+
+    </LinearLayout>
+</ScrollView>

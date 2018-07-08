@@ -38,6 +38,7 @@ public class ProductDetailsAcitvity extends AppCompatActivity {
     private static final int DECREASE_VALUE = -1;
     private static final int INCREASE_VALUE = 1;
     private static final String TAG = ProductDetailsAcitvity.class.getSimpleName();
+    private static final int SINGLE_ITEM = 1;
 
     // declaring and assinging views with ButterKnife
     @BindView(R.id.product_details_decrease_by_one)
@@ -89,11 +90,20 @@ public class ProductDetailsAcitvity extends AppCompatActivity {
              */
             @Override
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+                // first we set supplier id to 0L
                 mSupplierId = SUPPLIER_UNDEFINED;
                 if (data.moveToFirst()) {
+
+                    // getting and displaying data
                     mProductName.setText(data.getString(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_PRODUCT_NAME)));
-                    mProductQuantity = mProductQuantity = data.getInt(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_QUANTITY));
-                    mProductQuantityText.setText(String.format(getString(R.string.product_details_quantity), mProductQuantity));
+                    mProductQuantity = data.getInt(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_QUANTITY));
+
+                    // if there is a single item we change 'pcs' to '1 piece'
+                    if (mProductQuantity > SINGLE_ITEM)
+                        mProductQuantityText.setText(String.format(getString(R.string.product_details_quantity), mProductQuantity));
+                    else
+                        mProductQuantityText.setText(getString(R.string.product_details_quantity_one_item));
                     mProductPrice = data.getInt(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_PRICE));
                     mProductPriceTxt.setText(String.format(getString(R.string.product_details_price), mProductPrice));
                     mSupplierId = data.getLong(data.getColumnIndexOrThrow(ProductEntry.COLUMN_NAME_SUPPLIER_ID));
@@ -134,7 +144,7 @@ public class ProductDetailsAcitvity extends AppCompatActivity {
 
                     // set onClickListener on the call button
                     mCallSupplier.setOnClickListener(v ->
-                        callSupplier(getApplicationContext(), phoneNumber)
+                            callSupplier(getApplicationContext(), phoneNumber)
                     );
                 }
             }

@@ -5,26 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SupplierEditActivity">
+    tools:context=".SupplierEditActivity"
+    android:padding="6dp">
 
+    <!-- supplier name -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Supplier Name:"/>
+        android:text="@string/supplier_edit_supplier_name"/>
     <EditText
         android:id="@+id/edit_supplier_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter supplier name here"/>
+        android:hint="@string/supplier_edit_enter_supplier_name_here"/>
+
+    <!-- supplier phone -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Supplier Phone"/>
+        android:text="@string/supplier_edit_supplier_phone"/>
     <EditText
         android:id="@+id/edit_supplier_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter phone number here"
+        android:hint="@string/supplier_edit_enter_phone_number_here"
         android:inputType="phone"/>
 
 </LinearLayout>

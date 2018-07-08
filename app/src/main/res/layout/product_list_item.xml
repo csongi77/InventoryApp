@@ -1,33 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-<TextView
-    android:id="@+id/product_name_txt"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:text="ProductName"/>
+    android:orientation="horizontal"
+    android:padding="6dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:id="@+id/to_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:background="?selectableItemBackground"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/product_name_txt"
+            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="ProductName" />
 
         <TextView
             android:id="@+id/price_txt"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="price" />
+            android:text="@string/product_details_price" />
 
         <TextView
             android:id="@+id/quantity_txt"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="quantity" />
-    </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/product_details_quantity" />
 
+    </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sale_button"
+        android:layout_gravity="center"
+        android:text="@string/product_list_item_sell_button"/>
 </LinearLayout>
+

@@ -10,9 +10,12 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
+import net.sytes.csongi.inventoryapp.R;
 
 import java.io.FileNotFoundException;
 
@@ -121,8 +124,7 @@ public class InventoryProvider extends ContentProvider {
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 affectedRows = deleteSupplier(selection, selectionArgs, db);
                 if (affectedRows > 0) {
-                    Toast.makeText(getContext(), "Supplier with id: " +
-                            String.valueOf(ContentUris.parseId(uri)) + " has been deleted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getContext().getString(R.string.inventory_provider_supplier_deleted, ContentUris.parseId(uri)), Toast.LENGTH_LONG).show();
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
                 return affectedRows;

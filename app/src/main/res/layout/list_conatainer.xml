@@ -5,32 +5,38 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <!-- empty view for list -->
+    <LinearLayout
         android:id="@+id/list_is_empty"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <ImageView
             android:id="@+id/list_is_empty_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_folder_open" />
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_marginTop="72dp"
+            android:src="@drawable/ic_folder_open"
+            android:layout_gravity="center"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/list_is_empty_text"
+            android:layout_gravity="center"
             android:layout_alignParentBottom="true"
-            android:textSize="36dp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:text="The list is empty"
+            android:text="@string/list_container_the_list_is_empty"
             android:textColor="@android:color/black"
-            android:translationY="-64dp"
-            android:translationX="16dp"
+            android:padding="6dp"
             />
 
-    </RelativeLayout>
+    </LinearLayout>
 
+    <!-- container for list items -->
     <ListView
         android:id="@+id/product_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"/>
 </LinearLayout>

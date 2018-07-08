@@ -61,17 +61,18 @@ public class SupplierEditActivity extends AppCompatActivity {
         }
 
         // set up touch listeners
-        View.OnTouchListener fieldTouchListener = (v, event) -> {
+      /*  View.OnTouchListener fieldTouchListener = (v, event) -> {
             mIsEdited = true;
             return false;
         };
         mSupplierName.setOnTouchListener(fieldTouchListener);
         mSupplierPhone.setOnTouchListener(fieldTouchListener);
-
+*/
         // set up onFocus listeners
         View.OnFocusChangeListener fieldCheckListener = (v, hasFocus) -> {
             int field = v.getId();
             if (!hasFocus) {
+                mIsEdited=true;
                 switch (field) {
                     // checking on focus change whether compulsory field has been filled out...
                     case R.id.edit_supplier_name:
@@ -79,15 +80,15 @@ public class SupplierEditActivity extends AppCompatActivity {
                             mSupplierName.setText(null);
                             mSupplierName.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                             mSupplierName.setHint(R.string.supplier_edit_error_name_empty);
-                            break;
                         }
+                        break;
                     case R.id.edit_supplier_phone:
                         if (!isSupplierTextFieldValid(mSupplierPhone)) {
                             mSupplierPhone.setText(null);
                             mSupplierPhone.setHintTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                             mSupplierPhone.setHint(R.string.supplier_field_error_phone_empty);
-                            break;
                         }
+                        break;
                 }
             }
         };
